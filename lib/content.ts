@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { asset } from './site';
 import {
   Activity,
   Bot,
@@ -26,7 +27,8 @@ export const profile = {
   email: 'adarsh89patro@gmail.com',
   linkedin: 'https://www.linkedin.com/in/adarsh-patro',
   github: 'https://github.com/Adarsh89P',
-  resume: '/resume.pdf',
+  // asset() keeps the link correct under a GitHub Pages base path.
+  resume: asset('/resume.pdf'),
 } as const;
 
 export const navSections = [

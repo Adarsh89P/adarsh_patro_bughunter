@@ -1,7 +1,11 @@
 import type { MetadataRoute } from 'next';
 import { projects } from '@/lib/content';
+import { siteUrl } from '@/lib/site';
 
-const base = 'https://adarshpatro.dev';
+const base = siteUrl;
+
+// Required for `output: export` — these routes are emitted as static files.
+export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

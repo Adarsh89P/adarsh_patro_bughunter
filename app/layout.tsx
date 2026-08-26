@@ -4,9 +4,8 @@ import { SmoothScroll } from '@/components/ui/SmoothScroll';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { profile } from '@/lib/content';
+import { siteUrl } from '@/lib/site';
 import './globals.css';
-
-const siteUrl = 'https://adarshpatro.dev';
 const description =
   'Adarsh Patro — Automation QA Engineer building reliable, scalable and efficient testing solutions with Playwright, Selenium, Java and CI/CD.';
 

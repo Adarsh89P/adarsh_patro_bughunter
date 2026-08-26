@@ -73,8 +73,31 @@ All copy, skills, experience and case studies live in `lib/content.ts` — one
 file to edit, no markup changes required. Case study pages are generated from
 the same data at `/projects/[slug]`.
 
-Add your `resume.pdf` to `public/` (see `public/README.md`) or point
-`profile.resume` at an external URL.
+Add your `resume.pdf` to `public/` — it is linked from the navigation, the hero's
+**View Resume** button and the contact section. Or point `profile.resume` at an
+external URL instead; either way `asset()` in `lib/site.ts` keeps the link correct
+under the GitHub Pages base path.
+
+## Deployment
+
+The site is a fully static export (`output: 'export'`), published to **GitHub
+Pages** by `.github/workflows/deploy.yml` on every push to `main` or the feature
+branch.
+
+Enable it once, in the repository: **Settings → Pages → Build and deployment →
+Source: GitHub Actions**. The workflow then builds and deploys on its own.
+
+A Pages *project* site is served from `https://<user>.github.io/<repo>/`, so the
+build needs that prefix. CI passes it as `NEXT_PUBLIC_BASE_PATH` (from
+`actions/configure-pages`); locally it stays empty and the site runs at the root.
+To reproduce the deployed build:
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/adarsh_patro_bughunter npm run build   # → ./out
+```
+
+Moving to a custom domain later means dropping `NEXT_PUBLIC_BASE_PATH` and
+setting `NEXT_PUBLIC_SITE_URL` — no code changes.
 
 ## Structure
 

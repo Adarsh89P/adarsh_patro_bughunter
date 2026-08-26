@@ -7,6 +7,9 @@ import { projects } from '@/lib/content';
 
 type PageProps = { params: Promise<{ slug: string }> };
 
+/** Static export: only the slugs below exist, everything else is a 404. */
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
