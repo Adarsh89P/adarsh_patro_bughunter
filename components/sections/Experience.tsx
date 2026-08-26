@@ -30,7 +30,7 @@ export function Experience() {
               My <span className="text-gradient">Journey</span>
             </>
           }
-          description="Four years of moving quality further left — from structured manual testing to automation that gates every release."
+          description="Six years in IT, four of them moving quality further left — from service desk and structured manual testing to automation that gates every release."
         />
 
         <div ref={timeline} className="relative mt-16 pl-10 sm:pl-14">
@@ -75,7 +75,6 @@ export function Experience() {
                   <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">{item.period}</p>
                   <h3 className="mt-3 text-xl font-semibold tracking-tight">{item.role}</h3>
                   <p className="mt-1 text-sm text-muted">{item.company}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-muted">{item.summary}</p>
 
                   <ul className="mt-5 space-y-2.5">
                     {item.points.map((point) => (

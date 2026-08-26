@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Target } from 'lucide-react';
+import { ArrowUpRight, Github, Target } from 'lucide-react';
 import { BugBoss } from '@/components/hero/BugBoss';
 import { Character } from '@/components/hero/Character';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -26,7 +26,7 @@ export function Projects() {
               Featured <span className="text-gradient">Missions</span>
             </>
           }
-          description="Each one started as a quality problem worth solving. Open a mission for the full case study."
+          description="Open-source automation frameworks I build and maintain. Open a mission for the full write-up, or read the code on GitHub."
         />
 
         {/* ── featured mission: the boss battle ─────────────────────────── */}
@@ -50,42 +50,38 @@ export function Projects() {
               <h3 className="mt-5 text-2xl font-semibold tracking-tight sm:text-3xl">{featured.name}</h3>
               <p className="mt-3 max-w-lg text-base leading-relaxed text-muted">{featured.tagline}</p>
 
-              <dl className="mt-8 space-y-5">
-                <div>
-                  <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">Challenge</dt>
-                  <dd className="mt-1.5 text-sm leading-relaxed text-muted">{featured.challenge}</dd>
-                </div>
-                <div>
-                  <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">Solution</dt>
-                  <dd className="mt-1.5 text-sm leading-relaxed text-muted">{featured.solution}</dd>
-                </div>
-              </dl>
+              <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted">{featured.summary}</p>
 
-              <ul className="mt-8 grid gap-3 sm:grid-cols-3">
-                {featured.metrics.map((metric) => (
-                  <li key={metric.label} className="rounded-2xl border border-line bg-surface px-4 py-3">
-                    <p className="text-xl font-semibold tracking-tight">{metric.value}</p>
-                    <p className="mt-0.5 text-xs text-muted">{metric.label}</p>
+              <ul className="mt-7 grid gap-3 sm:grid-cols-3">
+                {featured.highlights.map((highlight) => (
+                  <li key={highlight.label} className="rounded-2xl border border-line bg-surface px-4 py-3">
+                    <p className="text-lg font-semibold tracking-tight">{highlight.value}</p>
+                    <p className="mt-0.5 text-xs text-muted">{highlight.label}</p>
                   </li>
                 ))}
               </ul>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link href={`/projects/${featured.slug}`} className="btn-primary">
-                  View Case Study
+                  Read the write-up
                   <ArrowUpRight className="h-4 w-4" aria-hidden />
                 </Link>
-                <ul className="flex flex-wrap gap-2">
-                  {featured.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-full border border-line bg-surface px-2.5 py-1 font-mono text-[11px] text-muted"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
+                <a href={featured.repo} target="_blank" rel="noreferrer" className="btn-ghost">
+                  <Github className="h-4 w-4" aria-hidden />
+                  View on GitHub
+                </a>
               </div>
+
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {featured.stack.map((tech) => (
+                  <li
+                    key={tech}
+                    className="rounded-full border border-line bg-surface px-2.5 py-1 font-mono text-[11px] text-muted"
+                  >
+                    {tech}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* the standoff */}
@@ -111,14 +107,17 @@ export function Projects() {
         >
           {rest.map((project) => (
             <motion.li key={project.slug} variants={fadeUp}>
-              <Link
-                href={`/projects/${project.slug}`}
-                className="group flex h-full flex-col rounded-3xl border border-line bg-surface p-7
+              <article
+                className="group relative flex h-full flex-col rounded-3xl border border-line bg-surface p-7
                   transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1
                   hover:border-accent/35 hover:shadow-lift"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-xl font-semibold tracking-tight">{project.name}</h3>
+                  <h3 className="text-xl font-semibold tracking-tight">
+                    <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0">
+                      {project.name}
+                    </Link>
+                  </h3>
                   <ArrowUpRight
                     className="h-5 w-5 shrink-0 text-faint transition-[transform,color] duration-300
                       group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
@@ -129,10 +128,10 @@ export function Projects() {
                 <p className="mt-3 text-sm leading-relaxed text-muted">{project.tagline}</p>
 
                 <ul className="mt-6 grid grid-cols-3 gap-3">
-                  {project.metrics.map((metric) => (
-                    <li key={metric.label}>
-                      <p className="text-base font-semibold tracking-tight">{metric.value}</p>
-                      <p className="mt-0.5 text-[11px] leading-tight text-faint">{metric.label}</p>
+                  {project.highlights.map((highlight) => (
+                    <li key={highlight.label}>
+                      <p className="text-sm font-semibold tracking-tight">{highlight.value}</p>
+                      <p className="mt-0.5 text-[11px] leading-tight text-faint">{highlight.label}</p>
                     </li>
                   ))}
                 </ul>
@@ -147,7 +146,18 @@ export function Projects() {
                     </li>
                   ))}
                 </ul>
-              </Link>
+
+                <a
+                  href={project.repo}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="relative z-10 mt-5 inline-flex w-max items-center gap-1.5 text-sm text-muted
+                    transition-colors hover:text-accent"
+                >
+                  <Github className="h-4 w-4" aria-hidden />
+                  GitHub
+                </a>
+              </article>
             </motion.li>
           ))}
         </motion.ul>

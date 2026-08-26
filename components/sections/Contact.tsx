@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Download, Github, Linkedin, Mail } from 'lucide-react';
+import { ArrowRight, Download, Github, Linkedin, Mail, Phone } from 'lucide-react';
 import { Character } from '@/components/hero/Character';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeUp, stagger, viewportOnce } from '@/lib/animations';
@@ -11,6 +11,7 @@ const links = [
   { label: 'LinkedIn', href: profile.linkedin, icon: Linkedin, external: true },
   { label: 'GitHub', href: profile.github, icon: Github, external: true },
   { label: 'Email', href: `mailto:${profile.email}`, icon: Mail, external: false },
+  { label: profile.phone, href: `tel:${profile.phone.replace(/\s/g, '')}`, icon: Phone, external: false },
   { label: 'Resume', href: profile.resume, icon: Download, external: true },
 ];
 
@@ -43,6 +44,10 @@ export function Contact() {
 
             <motion.p variants={fadeUp} className="mt-5 max-w-md text-base leading-relaxed text-muted sm:text-lg">
               Found all the bugs. Ready for the next challenge — let&rsquo;s build something reliable together.
+            </motion.p>
+
+            <motion.p variants={fadeUp} className="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-faint">
+              {profile.location}
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-9">

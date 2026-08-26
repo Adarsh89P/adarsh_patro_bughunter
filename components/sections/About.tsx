@@ -8,7 +8,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Reveal } from '@/components/ui/Reveal';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { ease, fadeUp, stagger, viewportOnce } from '@/lib/animations';
-import { focusAreas, stats } from '@/lib/content';
+import { about, certifications, education, focusAreas, stats } from '@/lib/content';
 
 export function About() {
   const reducedMotion = useReducedMotion();
@@ -26,7 +26,7 @@ export function About() {
                   Behind the <span className="text-gradient">Bug Hunter</span>
                 </>
               }
-              description="I am an Automation QA Engineer focused on building reliable and scalable automation solutions. I enjoy solving complex problems, improving testing processes, and ensuring high-quality digital experiences."
+              description={about.lead}
             />
 
             <Reveal className="mt-8" delay={0.05}>
@@ -56,17 +56,9 @@ export function About() {
                   className="overflow-hidden"
                 >
                   <div className="mt-6 space-y-4 text-base leading-relaxed text-muted">
-                    <p>
-                      Most of my work sits where quality engineering meets developer experience: frameworks
-                      that other engineers can read, extend and trust. A suite nobody trusts is worse than no
-                      suite at all, so I optimise for signal — deterministic waits, isolated test data, and
-                      failures that name the real cause.
-                    </p>
-                    <p>
-                      Day to day that means designing page-object and fixture layers, pushing coverage down to
-                      the API where it runs faster, wiring everything into CI as a real release gate, and
-                      reporting readiness in a way the whole delivery team can act on.
-                    </p>
+                    {about.more.map((paragraph) => (
+                      <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+                    ))}
                   </div>
                 </motion.div>
               )}
@@ -100,7 +92,7 @@ export function About() {
                 />
               </div>
               <p className="relative mt-6 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-faint">
-                Currently hunting regressions in insurance platforms
+                Kolkata, India — currently at Sundew Solutions
               </p>
             </Reveal>
 
@@ -131,6 +123,40 @@ export function About() {
             </motion.ul>
           </div>
         </div>
+
+        <motion.div
+          variants={stagger(0.08)}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewportOnce}
+          className="mt-14 grid gap-4 border-t border-line pt-12 sm:grid-cols-2"
+        >
+          <motion.div variants={fadeUp} className="surface-card p-6">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">Education</h3>
+            <ul className="mt-5 space-y-4">
+              {education.map((item) => (
+                <li key={item.qualification}>
+                  <p className="text-sm font-medium">{item.qualification}</p>
+                  <p className="mt-0.5 text-sm text-muted">
+                    {item.institution} · {item.year}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="surface-card p-6">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">Certifications</h3>
+            <ul className="mt-5 space-y-4">
+              {certifications.map((item) => (
+                <li key={item.name}>
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <p className="mt-0.5 text-sm text-muted">{item.issuer}</p>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

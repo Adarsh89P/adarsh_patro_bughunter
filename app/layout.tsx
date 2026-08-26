@@ -7,7 +7,7 @@ import { profile } from '@/lib/content';
 import { siteUrl } from '@/lib/site';
 import './globals.css';
 const description =
-  'Adarsh Patro — Automation QA Engineer building reliable, scalable and efficient testing solutions with Playwright, Selenium, Java and CI/CD.';
+  'Adarsh Patro — QA Automation Engineer and SDET in Kolkata, India. 6+ years in IT and 4+ in test automation, building Playwright, Selenium and API frameworks with CI/CD integration.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -18,13 +18,17 @@ export const metadata: Metadata = {
   description,
   keywords: [
     'Adarsh Patro',
-    'Automation QA Engineer',
-    'QA Automation',
+    'SDET',
+    'QA Automation Engineer',
     'Playwright',
-    'Selenium',
+    'Selenium WebDriver',
+    'Appium',
+    'Rest Assured',
     'TestNG',
+    'JMeter',
     'API Testing',
     'Test Automation Framework',
+    'Kolkata',
   ],
   authors: [{ name: profile.name }],
   creator: profile.name,
@@ -61,7 +65,19 @@ const personSchema = {
   email: `mailto:${profile.email}`,
   url: siteUrl,
   sameAs: [profile.linkedin, profile.github],
-  knowsAbout: ['Test Automation', 'Playwright', 'Selenium', 'API Testing', 'CI/CD', 'Performance Testing'],
+  address: { '@type': 'PostalAddress', addressLocality: 'Kolkata', addressRegion: 'West Bengal', addressCountry: 'IN' },
+  knowsAbout: [
+    'Test Automation',
+    'Playwright',
+    'Selenium WebDriver',
+    'Appium',
+    'API Testing',
+    'Rest Assured',
+    'CI/CD',
+    'Performance Testing',
+    'SQL',
+  ],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'West Bengal State University' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

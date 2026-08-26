@@ -3,13 +3,7 @@
 import { motion } from 'framer-motion';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { fadeUp, stagger, viewportOnce } from '@/lib/animations';
-import { skills } from '@/lib/content';
-
-const levelTone: Record<string, string> = {
-  Primary: 'bg-accent/12 text-accent',
-  Core: 'bg-accent/8 text-accent/85',
-  Working: 'bg-elevated text-faint',
-};
+import { skillGroups } from '@/lib/content';
 
 export function Skills() {
   return (
@@ -32,8 +26,8 @@ export function Skills() {
           viewport={viewportOnce}
           className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {skills.map((skill) => (
-            <motion.li key={skill.name} variants={fadeUp}>
+          {skillGroups.map((group) => (
+            <motion.li key={group.name} variants={fadeUp}>
               <article
                 className="group relative h-full overflow-hidden rounded-2xl border border-line bg-surface p-5
                   transition-[transform,border-color,box-shadow] duration-300 will-change-transform
@@ -46,18 +40,24 @@ export function Skills() {
                     blur-2xl transition-colors duration-500 group-hover:bg-accent/20"
                 />
 
-                <div className="relative flex items-start justify-between gap-3">
-                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-accent/10 text-accent
+                <div className="relative flex items-center gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent
                     transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105">
-                    <skill.icon className="h-5 w-5" aria-hidden />
+                    <group.icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${levelTone[skill.level]}`}>
-                    {skill.level}
-                  </span>
+                  <h3 className="text-base font-medium leading-tight">{group.name}</h3>
                 </div>
 
-                <h3 className="relative mt-5 text-base font-medium">{skill.name}</h3>
-                <p className="relative mt-1.5 text-sm leading-relaxed text-muted">{skill.blurb}</p>
+                <ul className="relative mt-5 flex flex-wrap gap-1.5">
+                  {group.items.map((item) => (
+                    <li
+                      key={item}
+                      className="rounded-full border border-line bg-elevated px-2.5 py-1 font-mono text-[11px] text-muted"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </article>
             </motion.li>
           ))}

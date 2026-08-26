@@ -1,34 +1,37 @@
 import type { LucideIcon } from 'lucide-react';
-import { asset } from './site';
 import {
   Activity,
   Bot,
   Braces,
-  Bug,
-  CircleCheckBig,
+  ClipboardCheck,
   Database,
-  FileCode2,
   GitBranch,
-  Gauge,
-  Layers,
+  MonitorCog,
   Network,
-  ShieldCheck,
-  TerminalSquare,
+  ServerCog,
   Workflow,
 } from 'lucide-react';
+import { asset } from './site';
+
+/**
+ * Every word on the site comes from this file, and every fact in it comes from
+ * Adarsh's resume (public/Adarsh_Patro_SDET_Resume.docx). Keep the two in sync.
+ */
 
 export const profile = {
   name: 'Adarsh Patro',
-  role: 'Automation QA Engineer',
+  role: 'QA Automation Engineer · SDET',
   tagline: 'A Bug Hunter.',
   summary:
-    'Automation QA Engineer building reliable, scalable, and efficient testing solutions.',
-  location: 'India',
+    'SDET with 6+ years in IT and 4+ in test automation — building scalable Playwright, Selenium and API frameworks that catch defects before release.',
+  location: 'Kolkata, West Bengal, India',
+  phone: '+91 8910873212',
   email: 'adarsh89patro@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/adarsh-patro',
+  linkedin: 'https://www.linkedin.com/in/adarsh-patro-08528a210',
   github: 'https://github.com/Adarsh89P',
   // asset() keeps the link correct under a GitHub Pages base path.
   resume: asset('/resume.pdf'),
+  resumeDocx: asset('/Adarsh_Patro_SDET_Resume.docx'),
 } as const;
 
 export const navSections = [
@@ -39,292 +42,372 @@ export const navSections = [
   { id: 'contact', label: 'Contact' },
 ] as const;
 
+export const about = {
+  lead: 'Quality Assurance / Software Development Engineer in Test with 6+ years of IT experience, including 4+ years in manual and automation testing, CI/CD pipeline integration, and quality engineering across web, mobile, and API layers.',
+  more: [
+    'Skilled in building and maintaining scalable automation frameworks using Selenium WebDriver, Playwright (JavaScript/TypeScript), and Appium, applying the Page Object Model (POM) and data-driven testing patterns. Experienced across the full Software Test Life Cycle (STLC): test planning, test case design, execution, defect tracking, and reporting.',
+    'Proficient in performance and load testing (Apache JMeter, Gatling), API test automation (Postman, Rest Assured, SoapUI), and backend data validation using SQL. Contributes to CI/CD delivery pipelines with Jenkins, Git, and GitHub Actions within Agile/Scrum teams.',
+  ],
+} as const;
+
 export type Focus = { label: string; icon: LucideIcon; description: string };
 
 export const focusAreas: Focus[] = [
   {
     label: 'Automation Testing',
     icon: Bot,
-    description: 'End-to-end suites that run unattended on every build.',
-  },
-  {
-    label: 'UI Testing',
-    icon: Layers,
-    description: 'Stable selectors, resilient waits, zero flake tolerance.',
+    description: 'Selenium WebDriver, Playwright and Appium suites built on the Page Object Model.',
   },
   {
     label: 'API Testing',
     icon: Network,
-    description: 'Contract, integration and data-driven service coverage.',
-  },
-  {
-    label: 'Framework Design',
-    icon: Workflow,
-    description: 'Reusable, page-object driven architecture teams can extend.',
+    description: 'REST and SOAP coverage with Postman, Rest Assured and SoapUI.',
   },
   {
     label: 'Performance Testing',
-    icon: Gauge,
-    description: 'Load profiles and thresholds tied to real release gates.',
+    icon: Activity,
+    description: 'Load, stress and scalability profiles in Apache JMeter and Gatling.',
+  },
+  {
+    label: 'CI/CD Integration',
+    icon: GitBranch,
+    description: 'Continuous test execution on every build through Jenkins and GitHub Actions.',
+  },
+  {
+    label: 'Database Testing',
+    icon: Database,
+    description: 'Backend data validation with SQL across MySQL and PostgreSQL.',
   },
 ];
 
-export type Skill = {
-  name: string;
-  icon: LucideIcon;
-  blurb: string;
-  level: 'Primary' | 'Core' | 'Working';
-};
+export type SkillGroup = { name: string; icon: LucideIcon; items: string[] };
 
-export const skills: Skill[] = [
-  { name: 'Playwright', icon: Bug, blurb: 'Parallel E2E across Chromium, WebKit and Firefox.', level: 'Primary' },
-  { name: 'Selenium', icon: Bot, blurb: 'Grid-based cross-browser regression at scale.', level: 'Primary' },
-  { name: 'Java', icon: FileCode2, blurb: 'Primary language for framework and utility layers.', level: 'Primary' },
-  { name: 'JavaScript', icon: Braces, blurb: 'Test scripting, tooling and browser automation.', level: 'Core' },
-  { name: 'TypeScript', icon: TerminalSquare, blurb: 'Typed Playwright fixtures and shared test models.', level: 'Core' },
-  { name: 'API Testing', icon: Network, blurb: 'REST Assured, Postman and schema validation.', level: 'Primary' },
-  { name: 'TestNG', icon: CircleCheckBig, blurb: 'Suites, groups, retries and parallel execution.', level: 'Core' },
-  { name: 'JMeter', icon: Activity, blurb: 'Load, stress and soak profiles with clear SLAs.', level: 'Working' },
-  { name: 'Git', icon: GitBranch, blurb: 'Trunk-based flow, reviews and clean history.', level: 'Core' },
-  { name: 'CI/CD', icon: ShieldCheck, blurb: 'Jenkins and GitHub Actions quality gates.', level: 'Core' },
-  { name: 'SQL', icon: Database, blurb: 'Backend assertions and test data preparation.', level: 'Core' },
+/** Mirrors the Core Skills section of the resume, category for category. */
+export const skillGroups: SkillGroup[] = [
+  {
+    name: 'Automation Testing',
+    icon: Bot,
+    items: [
+      'Selenium WebDriver',
+      'Playwright (JavaScript/TypeScript)',
+      'Appium',
+      'TestNG',
+      'JUnit',
+      'Page Object Model (POM)',
+      'Data-Driven Testing',
+      'Cross-Browser Testing',
+    ],
+  },
+  {
+    name: 'Programming / Scripting',
+    icon: Braces,
+    items: ['Java', 'JavaScript', 'TypeScript', 'SQL'],
+  },
+  {
+    name: 'API Testing',
+    icon: Network,
+    items: [
+      'Postman',
+      'Rest Assured',
+      'SoapUI',
+      'RESTful API Testing',
+      'SOAP API Testing',
+      'Contract Testing',
+      'Payload Validation',
+    ],
+  },
+  {
+    name: 'Performance Testing',
+    icon: Activity,
+    items: ['Apache JMeter', 'Gatling', 'Load Testing', 'Stress Testing', 'Scalability Testing'],
+  },
+  {
+    name: 'CI/CD & Version Control',
+    icon: GitBranch,
+    items: ['Jenkins', 'GitHub Actions', 'Git', 'GitHub'],
+  },
+  {
+    name: 'Test Management',
+    icon: ClipboardCheck,
+    items: [
+      'JIRA',
+      'Test Plan Authoring',
+      'Test Case Design',
+      'Traceability Matrix',
+      'Defect Lifecycle Management',
+    ],
+  },
+  {
+    name: 'Database Testing',
+    icon: Database,
+    items: ['SQL', 'MySQL', 'PostgreSQL', 'Backend Data Validation'],
+  },
+  {
+    name: 'Methodologies',
+    icon: Workflow,
+    items: [
+      'Agile',
+      'Scrum',
+      'STLC',
+      'Regression Testing',
+      'Smoke Testing',
+      'Peer Code Review',
+      'Sprint Planning',
+    ],
+  },
+  {
+    name: 'Platforms',
+    icon: MonitorCog,
+    items: ['Windows', 'Linux'],
+  },
 ];
 
 export type Experience = {
   role: string;
   company: string;
   period: string;
-  summary: string;
   points: string[];
   stack: string[];
 };
 
 export const experiences: Experience[] = [
   {
-    role: 'QA Automation Engineer',
-    company: 'LEROI | LHG',
-    period: '2023 — Present',
-    summary: 'Own the automation strategy for a multi-product insurance platform.',
+    role: 'QA Automation Engineer – Technical Associate',
+    company: 'Sundew Solutions Pvt Ltd',
+    period: 'Mar 2024 — Present',
     points: [
-      'Designed and maintain a Playwright + TypeScript framework covering critical customer journeys.',
-      'Cut regression cycles from days to hours by parallelising suites across CI runners.',
-      'Introduced API-level test layers that catch contract breaks before UI runs start.',
-      'Report release readiness with trend dashboards the whole delivery team reads.',
+      'Architected and maintained Playwright (JavaScript/TypeScript) end-to-end automation scripts for enterprise web platforms, reducing manual regression effort by approximately 35%.',
+      'Converted 1000+ manual test cases into automated functional and regression test flows, increasing sprint automation coverage by approximately 40% and accelerating release cycles.',
+      'Integrated automated test suites into the CI/CD delivery pipeline using Jenkins, enabling continuous test execution on every build and early defect detection.',
+      'Partnered with developers, product owners, and DevOps engineers across Agile sprints to align test strategy with product requirements, reducing rework from misaligned acceptance criteria.',
+      'Owned the end-to-end defect lifecycle in JIRA — logging, triage, prioritization, and resolution tracking with detailed reproduction steps — improving fix turnaround time.',
+      'Enforced coding standards through peer code reviews of automation scripts, improving framework maintainability and reducing flaky test failures.',
     ],
-    stack: ['Playwright', 'TypeScript', 'Java', 'REST Assured', 'GitHub Actions'],
+    stack: ['Playwright', 'JavaScript', 'TypeScript', 'Jenkins', 'JIRA', 'Agile'],
   },
   {
-    role: 'Automation Engineer',
-    company: 'Sundew Solutions',
-    period: '2022 — 2023',
-    summary: 'Built reusable automation assets across several client engagements.',
+    role: 'QA Associate – Automation & Manual Testing',
+    company: 'Qolaris Data Ltd',
+    period: 'Nov 2023 — Mar 2024',
     points: [
-      'Migrated legacy record-and-playback scripts to a maintainable page-object framework.',
-      'Added data-driven coverage so one test body validates dozens of business permutations.',
-      'Wired suites into Jenkins with fail-fast gates and rich HTML reporting.',
+      'Designed and executed UI automation scripts using Selenium WebDriver (Java) with the Page Object Model (POM), ensuring scalable and maintainable test architecture.',
+      'Implemented mobile automation testing using Appium for Android, validating functional flows and UI interactions across multiple device and OS configurations.',
+      'Validated RESTful endpoints, payloads, authentication flows, and error-handling scenarios in Postman, catching integration defects before release.',
+      'Authored SQL queries to verify backend data integrity, cross-referencing application behavior against database state to identify discrepancies.',
+      'Drove sprint planning and backlog grooming discussions with test case reviews, closing coverage gaps across user stories and acceptance criteria.',
     ],
-    stack: ['Selenium', 'Java', 'TestNG', 'Maven', 'Jenkins'],
+    stack: ['Selenium WebDriver', 'Java', 'Appium', 'Postman', 'SQL', 'POM'],
   },
   {
-    role: 'Software Test Engineer',
-    company: 'Sundew Solutions',
-    period: '2021 — 2022',
-    summary: 'Manual and exploratory testing foundation that shaped the automation work.',
+    role: 'QA & Service Desk Associate',
+    company: 'Minosha India Ltd',
+    period: 'Mar 2020 — Oct 2023',
     points: [
-      'Authored structured test cases and traceability for core product modules.',
-      'Ran exploratory sessions that surfaced high-severity defects ahead of release.',
-      'Partnered with developers on root-cause analysis and regression prevention.',
+      'Built and maintained a Selenium WebDriver (Java) automated regression suite, cutting manual testing cycle time by approximately 30% and improving defect detection rates across releases.',
+      'Planned and executed functional, regression, integration, and performance test cycles; used JMeter for load and stress testing to verify system scalability and performance SLAs.',
+      'Validated RESTful and SOAP-based services using Postman and SoapUI, ensuring contract compliance, payload accuracy, and correct error handling ahead of release.',
+      'Authored and maintained test plans, test cases, and test scripts aligned to product requirements, forming the baseline for the team’s regression suite.',
+      'Ran SQL queries to verify backend data integrity and identify anomalies, accelerating root-cause analysis and defect resolution for developers.',
+      'Logged and tracked defects in JIRA with reproducible steps and severity classifications, driving a structured fix-and-verify process across releases.',
     ],
-    stack: ['Jira', 'Postman', 'SQL', 'Test Design'],
+    stack: ['Selenium WebDriver', 'Java', 'JMeter', 'Postman', 'SoapUI', 'SQL', 'JIRA'],
+  },
+  {
+    role: 'Help Desk Associate',
+    company: 'Writer Information Service Pvt Ltd',
+    period: 'Nov 2018 — Mar 2020',
+    points: [
+      'Resolved Tier-1 and Tier-2 software and hardware issues, sustaining a high first-contact resolution rate.',
+      'Documented issues, resolutions, and escalation paths in an ITSM ticketing system, improving handoff clarity across support tiers.',
+      'Created onboarding and training materials for new employees, standardizing support procedures and cutting ramp-up time.',
+    ],
+    stack: ['ITSM', 'Troubleshooting', 'Documentation'],
   },
 ];
 
-export type Metric = { value: string; label: string };
+export type Highlight = { value: string; label: string };
 
 export type Project = {
   slug: string;
   name: string;
+  repo: string;
   tagline: string;
-  challenge: string;
-  solution: string;
-  impact: string[];
+  summary: string;
+  features: string[];
   stack: string[];
-  metrics: Metric[];
-  caseStudy: {
+  highlights: Highlight[];
+  detail: {
     overview: string;
-    problem: string;
-    challenge: string;
-    solution: string;
+    goals: string[];
     architecture: string[];
-    strategy: string[];
-    results: string[];
-    lessons: string[];
+    flow: string[];
+    practices: string[];
   };
 };
 
+/**
+ * Open-source automation frameworks, as described on the resume. These are
+ * personal repositories rather than client engagements, so they are presented
+ * as framework write-ups — no client metrics are claimed for them.
+ */
 export const projects: Project[] = [
   {
-    slug: 'automation-test-suite',
-    name: 'Automation Test Suite',
-    tagline: 'End-to-end insurance automation suite with 1600+ test cases.',
-    challenge: 'Manual regression testing was time-consuming and error-prone.',
-    solution:
-      'Built a scalable automation framework using modern testing tools and a reusable, page-object driven architecture.',
-    impact: [
-      '1600+ automated test cases',
-      '70% faster release regression',
-      '90% regression coverage',
-      'Manual effort reduced to exploratory work only',
+    slug: 'playwright-automation-framework',
+    name: 'Playwright Automation Framework',
+    repo: 'https://github.com/Adarsh89P/playrightframework',
+    tagline: 'End-to-end web automation built with Playwright and the Page Object Model.',
+    summary:
+      'End-to-end web automation framework built with Playwright (JavaScript/TypeScript) using the Page Object Model design pattern. Features cross-browser test execution, reusable component abstractions, data-driven test support, and integrated HTML reporting, designed for CI/CD pipeline integration.',
+    features: [
+      'Cross-browser test execution',
+      'Reusable component abstractions',
+      'Data-driven test support',
+      'Integrated HTML reporting',
+      'Designed for CI/CD pipeline integration',
     ],
-    stack: ['Playwright', 'Java', 'TestNG', 'REST Assured', 'Jenkins'],
-    metrics: [
-      { value: '1600+', label: 'Test cases' },
-      { value: '70%', label: 'Faster execution' },
-      { value: '90%', label: 'Regression coverage' },
+    stack: ['Playwright', 'JavaScript', 'TypeScript', 'Page Object Model', 'CI/CD'],
+    highlights: [
+      { value: 'JS/TS', label: 'Language' },
+      { value: 'POM', label: 'Architecture' },
+      { value: 'Cross-browser', label: 'Execution' },
     ],
-    caseStudy: {
+    detail: {
       overview:
-        'A full regression automation programme for an insurance platform spanning quoting, policy administration and claims.',
-      problem:
-        'Every release needed a multi-day manual regression pass. Coverage varied by tester, defects leaked into production, and the team could not release more than once a month with confidence.',
-      challenge:
-        'The application spans several modules with deep, stateful flows and heavy backend dependency. Test data had to be created per run, and the suite needed to stay readable for engineers who were not automation specialists.',
-      solution:
-        'A layered framework: a driver/fixture layer, page objects per module, a business-flow layer that reads like the test plan, and an API layer used both for assertions and for fast test-data setup.',
+        'A Playwright-based end-to-end framework for web applications, structured so that tests read as business intent and the selectors live in one place per screen.',
+      goals: [
+        'Keep tests readable by engineers who are not automation specialists.',
+        'Isolate every selector behind a page object, so a UI change touches one file.',
+        'Run the same suite across browsers without per-browser test code.',
+        'Produce a report that explains a failure without a re-run.',
+      ],
       architecture: [
-        'Fixture layer — browser context, auth state and environment configuration.',
-        'Page objects — one per screen, exposing intent-level methods, never raw selectors.',
-        'Business flows — composable journeys such as "issue a policy" reused across suites.',
-        'API utilities — REST Assured helpers seed data and assert backend state.',
-        'Reporting — HTML report plus CI annotations with failure screenshots and traces.',
+        'Page objects — one per screen, exposing intent-level methods rather than raw selectors.',
+        'Reusable component abstractions for elements shared across pages.',
+        'Data-driven layer so one test body covers many input permutations.',
+        'Cross-browser configuration handled by the runner, not duplicated in tests.',
+        'HTML reporting wired in, ready to publish from a pipeline.',
       ],
-      strategy: [
-        'Risk-based prioritisation: smoke, critical path, then full regression tiers.',
-        'API-first setup so UI tests start from a known state instead of clicking through it.',
-        'Deterministic waits on application state, never fixed sleeps.',
-        'Parallel execution sharded across CI runners with isolated test data.',
-        'Quarantine lane for genuinely unstable tests so the main suite stays trustworthy.',
-      ],
-      results: [
-        'Regression cycle reduced from several days to a few hours.',
-        '1600+ automated cases running on every candidate build.',
-        'Roughly 90% regression coverage of the critical business flows.',
-        'Defects found earlier, with traces attached to the failing run.',
-      ],
-      lessons: [
-        'A framework only survives if non-specialists can read and extend it.',
-        'Test data setup deserves as much design attention as the assertions.',
-        'A small, always-green smoke suite earns more trust than a large flaky one.',
+      flow: ['Trigger', 'Setup', 'Execute', 'Assert', 'Report'],
+      practices: [
+        'Wait on application state, never on fixed sleeps.',
+        'One assertion intent per test, so a failure names its own cause.',
+        'Test data prepared per run so suites can execute in parallel.',
+        'Structured for CI/CD, so the suite runs on every build rather than on demand.',
       ],
     },
   },
   {
-    slug: 'payment-flow-automation',
-    name: 'Payment Flow Automation',
-    tagline: 'Automated validation across payment gateways and reconciliation.',
-    challenge: 'Manual payment validation was slow, repetitive and easy to get wrong.',
-    solution:
-      'Built a robust automation framework combining UI journeys with API and database assertions across every payment path.',
-    impact: [
-      'Full gateway matrix covered on each release',
-      'Reconciliation checks automated end to end',
-      'Payment defects caught before staging sign-off',
+    slug: 'selenium-automation-framework',
+    name: 'Selenium Automation Framework',
+    repo: 'https://github.com/Adarsh89P/selenium-automation-framework',
+    tagline: 'Scalable UI automation in Selenium WebDriver and Java, structured around POM.',
+    summary:
+      'Scalable UI test automation framework built with Selenium WebDriver and Java, structured around the Page Object Model (POM). Includes TestNG integration for parallel test execution, data-driven testing, and detailed test reporting.',
+    features: [
+      'Page Object Model architecture',
+      'TestNG integration',
+      'Parallel test execution',
+      'Data-driven testing',
+      'Detailed test reporting',
     ],
-    stack: ['Playwright', 'API Testing', 'SQL', 'TypeScript'],
-    metrics: [
-      { value: '6', label: 'Payment paths' },
-      { value: '100%', label: 'Critical flow coverage' },
-      { value: '3x', label: 'Faster validation' },
+    stack: ['Selenium WebDriver', 'Java', 'TestNG', 'Page Object Model'],
+    highlights: [
+      { value: 'Java', label: 'Language' },
+      { value: 'TestNG', label: 'Runner' },
+      { value: 'Parallel', label: 'Execution' },
     ],
-    caseStudy: {
+    detail: {
       overview:
-        'Automation for the payment and reconciliation journey, from checkout through gateway callback to ledger entry.',
-      problem:
-        'Payments were validated by hand across several gateways and currencies. Each release needed a long checklist, and reconciliation mismatches were often found only after go-live.',
-      challenge:
-        'Third-party gateways behave asynchronously, sandbox environments are flaky, and a payment is only correct when the UI, the API response and the database ledger all agree.',
-      solution:
-        'A three-way assertion model: the UI journey drives the payment, API polling waits for the terminal state, and SQL assertions confirm the ledger entry matches the expected amount and status.',
+        'A Java and Selenium WebDriver framework built for teams that need a maintainable regression suite rather than a pile of recorded scripts.',
+      goals: [
+        'Give every screen one page object and one owner.',
+        'Make adding a case a matter of data, not of new plumbing.',
+        'Cut wall-clock runtime through parallel execution.',
+        'Report results in enough detail to triage without re-running.',
+      ],
       architecture: [
-        'Journey layer — checkout flows per payment method.',
-        'Gateway adapters — sandbox handling isolated behind one interface per provider.',
-        'State poller — deterministic waiting on webhook-driven status changes.',
-        'Ledger assertions — SQL checks on amount, currency, status and reference.',
+        'Driver management isolated from tests, so browser setup never leaks into a case.',
+        'Page objects per screen following the Page Object Model.',
+        'TestNG suites, groups and parallel configuration.',
+        'Data-driven inputs supplied to shared test bodies.',
+        'Reporting layer capturing per-test outcomes.',
       ],
-      strategy: [
-        'Every payment method exercised on both success and failure paths.',
-        'Idempotency and retry behaviour covered explicitly.',
-        'Currency and rounding edge cases driven from a data table.',
-        'Isolated test accounts so parallel runs never collide.',
-      ],
-      results: [
-        'The full gateway matrix runs unattended on every release candidate.',
-        'Reconciliation mismatches surface in CI instead of in production.',
-        'Validation time reduced roughly threefold against the manual checklist.',
-      ],
-      lessons: [
-        'Asynchronous flows need state polling, not longer sleeps.',
-        'A payment test that only asserts the UI proves very little.',
-        'Sandbox instability must be isolated, or it becomes framework instability.',
+      flow: ['Suite', 'Driver', 'Page objects', 'Assertions', 'Report'],
+      practices: [
+        'Explicit waits on element state instead of implicit global waits.',
+        'Isolated test data so parallel threads never collide.',
+        'Groups separating smoke from full regression.',
+        'Peer-reviewed page objects to keep the framework consistent.',
       ],
     },
   },
   {
-    slug: 'api-regression-shield',
-    name: 'API Regression Shield',
-    tagline: 'Contract-first service coverage that fails fast in CI.',
-    challenge: 'Backend contract changes broke the UI suite long after the fact.',
-    solution:
-      'Introduced a fast API regression layer that runs before UI suites and blocks the pipeline on contract drift.',
-    impact: [
-      'Contract breaks caught in minutes, not hours',
-      'UI suite noise reduced significantly',
-      'Clear ownership of backend defects',
+    slug: 'api-automation-suite',
+    name: 'API Automation Suite',
+    repo: 'https://github.com/Adarsh89P/APIautomation',
+    tagline: 'Contract-first REST coverage with Rest Assured and Postman.',
+    summary:
+      'API test automation project using Rest Assured and Postman, covering RESTful endpoint validation, authentication flows, response schema assertions, and error-handling scenarios, supporting CI/CD integration.',
+    features: [
+      'RESTful endpoint validation',
+      'Authentication flow coverage',
+      'Response schema assertions',
+      'Error-handling scenarios',
+      'CI/CD integration support',
     ],
-    stack: ['REST Assured', 'Java', 'TestNG', 'JSON Schema'],
-    metrics: [
-      { value: '<5 min', label: 'Suite runtime' },
-      { value: '200+', label: 'Endpoint checks' },
-      { value: '1st', label: 'Gate in the pipeline' },
+    stack: ['Rest Assured', 'Postman', 'Java', 'JSON Schema'],
+    highlights: [
+      { value: 'Rest Assured', label: 'Library' },
+      { value: 'REST', label: 'Endpoints' },
+      { value: 'Schema', label: 'Assertions' },
     ],
-    caseStudy: {
+    detail: {
       overview:
-        'A fast, deterministic API regression layer positioned as the first quality gate in the delivery pipeline.',
-      problem:
-        'Service contract changes were discovered by long UI runs. Failures looked like UI defects, triage was slow, and ownership was unclear.',
-      challenge:
-        'The suite had to be fast enough to gate every commit, strict enough to catch schema drift, and readable enough that backend engineers would maintain it themselves.',
-      solution:
-        'Schema-validated request/response tests per endpoint, grouped by service, executing in parallel and reporting failures in the language of the API rather than the UI.',
-      architecture: [
-        'Client layer — one typed client per service with shared auth handling.',
-        'Schema registry — JSON Schema definitions versioned alongside the tests.',
-        'Scenario layer — happy path, validation errors, auth failures and edge cases.',
-        'Pipeline gate — runs before UI suites and stops the build on failure.',
+        'A service-level suite that validates endpoints directly, so contract breaks surface in minutes instead of inside a long UI run.',
+      goals: [
+        'Assert structure and types, not just status codes.',
+        'Cover the failure paths as deliberately as the happy ones.',
+        'Stay fast enough to gate every build.',
+        'Name the service and field in a failure, so triage is immediate.',
       ],
-      strategy: [
+      architecture: [
+        'Request builders per service with shared authentication handling.',
+        'Schema assertions validating response shape and types.',
+        'Scenario coverage across happy path, validation errors and auth failures.',
+        'Postman collections alongside the automated suite for exploratory checks.',
+      ],
+      flow: ['Request', 'Auth', 'Response', 'Schema', 'Report'],
+      practices: [
         'Every endpoint carries at least one contract test and one negative test.',
-        'Schemas assert structure and types, not just status codes.',
-        'Failures name the service and field, so triage is immediate.',
-        'The suite is kept under five minutes so nobody is tempted to skip it.',
-      ],
-      results: [
-        'Contract drift surfaces within minutes of a commit.',
-        'UI suite failures now overwhelmingly indicate real UI defects.',
-        'Backend teams took ownership of their own contract tests.',
-      ],
-      lessons: [
-        'Speed is a feature: a slow gate gets bypassed.',
-        'Error messages are part of the test design.',
-        'Testing at the lowest useful layer keeps the pyramid honest.',
+        'Authentication treated as a first-class scenario, not setup noise.',
+        'Kept fast so nobody is tempted to skip the gate.',
+        'Structured to run inside a CI/CD pipeline.',
       ],
     },
   },
 ];
 
+/** Career figures — these come from the professional experience, not the repos. */
 export const stats = [
-  { value: '1600+', label: 'Automated test cases' },
-  { value: '70%', label: 'Faster regression cycles' },
-  { value: '90%', label: 'Regression coverage' },
-  { value: '4+', label: 'Years hunting bugs' },
+  { value: '6+', label: 'Years in IT' },
+  { value: '4+', label: 'Years in testing' },
+  { value: '1000+', label: 'Manual cases automated' },
+  { value: '~40%', label: 'Automation coverage gained' },
+] as const;
+
+export const education = [
+  {
+    qualification: 'Bachelor of Computer Application (BCA)',
+    institution: 'West Bengal State University, Kolkata',
+    year: '2017',
+  },
+  {
+    qualification: 'Higher Secondary Education (Science)',
+    institution: 'Titagarh Upendra Bhanja Vidya Pith',
+    year: '2014',
+  },
+] as const;
+
+export const certifications = [
+  { name: 'Playwright JS/TS Automation Testing', issuer: 'Udemy Certificate of Completion' },
 ] as const;

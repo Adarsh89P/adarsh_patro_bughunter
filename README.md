@@ -73,10 +73,23 @@ All copy, skills, experience and case studies live in `lib/content.ts` — one
 file to edit, no markup changes required. Case study pages are generated from
 the same data at `/projects/[slug]`.
 
-Add your `resume.pdf` to `public/` — it is linked from the navigation, the hero's
-**View Resume** button and the contact section. Or point `profile.resume` at an
-external URL instead; either way `asset()` in `lib/site.ts` keeps the link correct
-under the GitHub Pages base path.
+Everything in `lib/content.ts` comes from the resume in
+`public/Adarsh_Patro_SDET_Resume.docx`. Keep the two in sync.
+
+### Resume
+
+`public/resume.pdf` is the file linked from the navigation, the hero's **View
+Resume** button and the contact section. It is typeset from the `.docx` so the
+wording stays the author's and only the layout is ours:
+
+```bash
+pip install reportlab
+python scripts/build_resume_pdf.py public/Adarsh_Patro_SDET_Resume.docx public/resume.pdf
+```
+
+`scripts/parse_resume.py` reads the `.docx` structure; `build_resume_pdf.py`
+renders it in the site's palette. After editing the `.docx`, re-run the command
+above and update `lib/content.ts` to match.
 
 ## Deployment
 
