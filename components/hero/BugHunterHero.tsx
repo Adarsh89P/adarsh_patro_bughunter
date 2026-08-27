@@ -150,7 +150,7 @@ export function BugHunterHero() {
           >
             <motion.p variants={fadeUp} className="eyebrow">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              Automation QA Engineer
+              {profile.role}
             </motion.p>
 
             <motion.h1
