@@ -7,6 +7,7 @@ import { ArrowRight, FileText, MousePointerClick, MoveDown } from 'lucide-react'
 import { Character, type CharacterState } from './Character';
 import { Bug } from './Bug';
 import { Arrow } from './Arrow';
+import { Clouds, Flora, Ground } from './HeroScenery';
 import {
   BUG_BY_PHASE,
   CHARACTER_BY_PHASE,
@@ -136,87 +137,105 @@ export function BugHunterHero() {
         <div ref={parallax} className="pointer-events-none absolute inset-0 -z-10">
           <div className="grid-backdrop absolute inset-0" />
           <div className="absolute left-1/2 top-1/3 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]" />
-          <div className="absolute inset-x-0 bottom-[8%] h-px bg-gradient-to-r from-transparent via-line to-transparent" />
+          <Clouds className="absolute inset-0" />
         </div>
 
-        {/* ── Scene 1: the greeting ─────────────────────────────────────── */}
-        <div className="container relative z-20">
-          <motion.div
-            ref={intro}
-            variants={stagger(0.09, 0.15)}
-            initial="hidden"
-            animate="show"
-            className="max-w-xl pb-[26vh] sm:pb-0"
-          >
-            <motion.p variants={fadeUp} className="eyebrow">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              {profile.role}
-            </motion.p>
-
-            <motion.h1
-              variants={fadeUp}
-              className="mt-6 text-[clamp(2.5rem,7vw,4.5rem)] font-semibold leading-[1.02]"
-            >
-              Hi, I&rsquo;m {profile.name.split(' ')[0]}
-              <span className="block text-gradient">{profile.tagline}</span>
-            </motion.h1>
-
-            <motion.p variants={fadeUp} className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">
-              {profile.summary}
-            </motion.p>
-
-            <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/#about" className="btn-primary">
-                Explore My Journey
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-              <a href={profile.resume} className="btn-ghost" target="_blank" rel="noreferrer">
-                <FileText className="h-4 w-4" aria-hidden />
-                View Resume
-              </a>
-            </motion.div>
-
-            <motion.p variants={fadeUp} className="mt-12 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-faint">
-              <MoveDown className="h-3.5 w-3.5 animate-bounce" aria-hidden />
-              {cinematic ? 'Scroll to begin the hunt' : 'Scroll to explore'}
-            </motion.p>
-          </motion.div>
-        </div>
-
-        {/* ── The stage: character, bug, arrow, explosion ────────────────── */}
+        {/*
+          Everything the camera pans and zooms. The hero copy and the character
+          live in one grid row aligned to a shared baseline (`items-end`), which
+          is also where the ground is drawn — so the hunter stands on the same
+          line the text sits on rather than floating independently of it.
+        */}
         <div ref={scene} className="pointer-events-none absolute inset-0 z-10 origin-center">
-          {/* character */}
-          <div
-            ref={character}
-            className="absolute bottom-[5%] left-[6%] w-[34%] max-w-[150px] sm:bottom-[8%] sm:left-[52%] sm:w-[30%] lg:left-[54%] lg:w-[22%] lg:max-w-[300px]"
-          >
-            <div className="pointer-events-auto" onMouseEnter={replayGreeting} onFocus={replayGreeting}>
-              <Character state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
-            </div>
-
-            {/* "Hi 👋" bubble — shown while the character waves */}
-            <motion.div
-              aria-hidden={!greeting}
-              initial={false}
-              animate={greeting && phase === 'intro' ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 6 }}
-              transition={{ duration: 0.4, ease: ease.out }}
-              className="absolute -top-4 left-[58%] w-max max-w-[190px] rounded-2xl rounded-bl-sm border
-                border-line bg-surface px-4 py-2.5 text-sm font-medium shadow-lift"
-            >
-              <span aria-hidden className="mr-1">👋</span>
-              Hi! Let&rsquo;s hunt some bugs.
-            </motion.div>
-
-            {/* scroll-driven bubble for scene 2 */}
-            {cinematic && (
-              <div
-                ref={bubble}
-                className="absolute -top-4 left-[58%] w-max max-w-[190px] rounded-2xl rounded-bl-sm border
-                  border-line bg-surface px-4 py-2.5 text-sm font-medium shadow-lift"
-              >
-                Wait&hellip; is that a bug?
+          <div className="container flex h-full items-center pt-20 lg:pt-24">
+            <div className="relative grid w-full items-end gap-y-3 sm:gap-y-6 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)] lg:gap-x-10">
+              {/* the ground, on the row's baseline — wider than the viewport so
+                  the camera pan never reveals its edge */}
+              <div className="pointer-events-none absolute bottom-0 left-1/2 h-[70px] w-[200vw] -translate-x-1/2">
+                <Ground className="absolute inset-0 h-full w-full" />
+                <Flora className="absolute inset-0 h-full w-full" />
               </div>
-            )}
+
+              {/* ── Scene 1: the greeting ─────────────────────────────────── */}
+              <motion.div
+                ref={intro}
+                variants={stagger(0.09, 0.15)}
+                initial="hidden"
+                animate="show"
+                className="pointer-events-auto pb-8 lg:pb-10"
+              >
+                <motion.p variants={fadeUp} className="eyebrow">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  {profile.role}
+                </motion.p>
+
+                <motion.h1
+                  variants={fadeUp}
+                  className="mt-5 text-[clamp(2.25rem,5vw,3.5rem)] font-semibold leading-[1.06]"
+                >
+                  <span className="block">Hi,</span>
+                  <span className="block">I&rsquo;m {profile.name.split(' ')[0]}</span>
+                  <span className="block text-gradient">{profile.tagline}</span>
+                </motion.h1>
+
+                <motion.p variants={fadeUp} className="mt-5 max-w-sm text-sm leading-relaxed text-muted sm:text-base">
+                  {profile.summary}
+                </motion.p>
+
+                <motion.div variants={fadeUp} className="mt-7 flex flex-wrap items-center gap-3">
+                  <Link href="/#about" className="btn-primary">
+                    Explore My Journey
+                    <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                  <a href={profile.resume} className="btn-ghost" target="_blank" rel="noreferrer">
+                    <FileText className="h-4 w-4" aria-hidden />
+                    View Resume
+                  </a>
+                </motion.div>
+
+                <motion.p variants={fadeUp} className="mt-8 hidden items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-faint sm:flex">
+                  <MoveDown className="h-3.5 w-3.5 animate-bounce" aria-hidden />
+                  {cinematic ? 'Scroll to begin the hunt' : 'Scroll to explore'}
+                </motion.p>
+              </motion.div>
+
+              {/* ── the hunter, standing on that same line ─────────────────── */}
+              {/* the SVG leaves a little room below the feet, so nudge the
+                  figure down until its shadow lands on the ground */}
+              <div className="relative translate-y-[4%] justify-self-center lg:justify-self-start">
+                <div ref={character} className="relative w-[58%] min-w-[150px] max-w-[220px] sm:w-[44%] lg:w-[330px] lg:max-w-none">
+                  <div className="pointer-events-auto" onMouseEnter={replayGreeting} onFocus={replayGreeting}>
+                    <Character state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
+                  </div>
+
+                  {/* "Hi 👋" bubble — shown while the character waves */}
+                  <motion.div
+                    aria-hidden={!greeting}
+                    initial={false}
+                    animate={greeting && phase === 'intro' ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 6 }}
+                    transition={{ duration: 0.4, ease: ease.out }}
+                    className="absolute left-[56%] top-[2%] w-max max-w-[150px] rounded-2xl rounded-bl-md border border-line
+                      bg-elevated px-3.5 py-2.5 text-[13px] font-medium leading-snug shadow-lift sm:left-[82%]
+                      sm:top-[4%] sm:max-w-[180px] sm:px-4 sm:py-3 sm:text-sm"
+                  >
+                    <span aria-hidden className="mr-1">👋</span>
+                    Hi! Let&rsquo;s hunt some <span className="text-accent">bugs!</span>
+                  </motion.div>
+
+                  {/* scroll-driven bubble for scene 2 */}
+                  {cinematic && (
+                    <div
+                      ref={bubble}
+                      className="absolute left-[56%] top-[2%] w-max max-w-[150px] rounded-2xl rounded-bl-md border border-line
+                        bg-elevated px-3.5 py-2.5 text-[13px] font-medium leading-snug shadow-lift sm:left-[82%]
+                        sm:top-[4%] sm:max-w-[180px] sm:px-4 sm:py-3 sm:text-sm"
+                    >
+                      Wait&hellip; is that a bug?
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* bug — parked beside the hunter when the cinematic is off */}

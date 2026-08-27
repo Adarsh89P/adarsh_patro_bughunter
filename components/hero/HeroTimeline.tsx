@@ -110,19 +110,19 @@ export function useHeroCinematic(refs: HeroRefs, { enabled, isDesktop, onPhase, 
     // the choreography scales with the responsive widths set on the markup.
     const pos = isDesktop
       ? {
-          charRun: 40,
+          charRun: 56,
           bugStart: 850,
           bugIn: 500,
           bugFlee: 600,
           bugStop: 612,
-          arrowStart: 260,
+          arrowStart: 300,
           arrowFly: 480,
           camera: -18,
           parallax: -8,
           zoom: 1.06,
         }
       : {
-          charRun: 24,
+          charRun: 16,
           bugStart: 380,
           bugIn: 200,
           bugFlee: 190,

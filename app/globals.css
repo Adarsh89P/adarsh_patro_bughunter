@@ -36,6 +36,10 @@
     --grid: 124 58 237;
     --grid-alpha: 0.06;
 
+    /* hero scenery */
+    --flora: 127 176 105;
+    --pebble: 148 145 168;
+
     --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
   }
@@ -70,6 +74,9 @@
 
     --grid: 167 139 250;
     --grid-alpha: 0.08;
+
+    --flora: 86 122 72;
+    --pebble: 92 90 116;
   }
 
   * {
