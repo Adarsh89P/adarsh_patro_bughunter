@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { Character } from '@/components/hero/Character';
+import { CharacterArt } from '@/components/hero/CharacterArt';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeUp, stagger, viewportOnce } from '@/lib/animations';
@@ -33,7 +33,7 @@ export function Experience() {
           description="Six years in IT, four of them moving quality further left — from service desk and structured manual testing to automation that gates every release."
         />
 
-        <div ref={timeline} className="relative mt-16 pl-10 sm:pl-14">
+        <div ref={timeline} className="relative mt-14 pl-10 sm:pl-14">
           {/* the trail */}
           <div className="absolute left-[11px] top-2 h-[calc(100%-1rem)] w-px bg-line sm:left-[15px]" aria-hidden />
           <motion.div
@@ -50,7 +50,7 @@ export function Experience() {
               style={{ top: walkerTop }}
               className="absolute left-[-20px] hidden w-16 -translate-y-1/2 sm:block"
             >
-              <Character state="IDLE" halo={false} className="h-auto w-full" />
+              <CharacterArt state="IDLE" halo={false} className="h-auto w-full" />
             </motion.div>
           )}
 

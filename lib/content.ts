@@ -387,6 +387,30 @@ export const projects: Project[] = [
   },
 ];
 
+/**
+ * The one engagement told as a story: challenge → solution → impact.
+ *
+ * Every figure here is taken verbatim from the Sundew Solutions bullets in
+ * `experiences` above — the same numbers the resume claims, and nothing more.
+ */
+export const missionHighlight = {
+  eyebrow: 'Mission report',
+  name: 'Regression Suite Automation',
+  context: 'Sundew Solutions — enterprise web platforms',
+  challenge:
+    'Regression was manual. Over a thousand cases had to be re-run by hand before every release, which made the suite slow to run, expensive to repeat, and easy to cut short under deadline pressure.',
+  solution:
+    'Built a Playwright end-to-end framework in JavaScript/TypeScript, converted the manual cases into automated functional and regression flows, and wired the suite into Jenkins so it runs on every build rather than on request.',
+  impact:
+    'Regression stopped being a release bottleneck: defects surface on the build that introduced them instead of during a hand-run pass at the end of the sprint.',
+  metrics: [
+    { value: '1000+', label: 'Manual cases automated' },
+    { value: '~35%', label: 'Manual regression effort saved' },
+    { value: '~40%', label: 'Sprint automation coverage gained' },
+  ],
+  stack: ['Playwright', 'TypeScript', 'Jenkins', 'CI/CD'],
+} as const;
+
 /** Career figures — these come from the professional experience, not the repos. */
 export const stats = [
   { value: '6+', label: 'Years in IT' },

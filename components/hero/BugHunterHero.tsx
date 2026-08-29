@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, FileText, MousePointerClick, MoveDown } from 'lucide-react';
-import { Character, type CharacterState } from './Character';
-import { Bug } from './Bug';
+import type { CharacterState } from './Character';
+import { CharacterArt } from './CharacterArt';
+import { BugArt } from './BugArt';
 import { Arrow } from './Arrow';
 import { Clouds, Flora, Ground } from './HeroScenery';
 import {
@@ -36,21 +37,49 @@ type Particle = {
   distance: number;
   spin: number;
   size: number;
-  shape: 'dot' | 'square' | 'shard';
+  shape: 'bug' | 'dot' | 'square' | 'shard';
   glow: boolean;
 };
 
+/**
+ * The blast is mostly miniature bugs, with debris mixed in: the beat reads as
+ * the bug splitting into copies of itself rather than as generic confetti.
+ */
 function buildParticles(count: number): Particle[] {
   const random = mulberry32(0x5eed);
-  return Array.from({ length: count }, (_, id) => ({
-    id,
-    angle: random() * Math.PI * 2,
-    distance: 120 + random() * 320,
-    spin: (random() - 0.5) * 540,
-    size: 5 + random() * 13,
-    shape: (['dot', 'square', 'shard'] as const)[Math.floor(random() * 3)],
-    glow: random() > 0.65,
-  }));
+  return Array.from({ length: count }, (_, id) => {
+    const roll = random();
+    const shape: Particle['shape'] =
+      roll < 0.62 ? 'bug' : roll < 0.75 ? 'dot' : roll < 0.88 ? 'square' : 'shard';
+    return {
+      id,
+      angle: random() * Math.PI * 2,
+      distance: 120 + random() * 320,
+      spin: (random() - 0.5) * 540,
+      // Bugs need a little more room than a speck of debris to stay readable.
+      size: (shape === 'bug' ? 11 : 5) + random() * 13,
+      shape,
+      glow: random() > 0.65,
+    };
+  });
+}
+
+/** A bug reduced to its silhouette — legible even at ~12px across. */
+function MiniBug({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden focusable="false">
+      <g fill="currentColor">
+        <ellipse cx="12" cy="13.5" rx="6.5" ry="7" />
+        <circle cx="12" cy="6.5" r="3.6" />
+        <rect x="11.4" y="7" width="1.2" height="12" rx="0.6" opacity="0.45" />
+      </g>
+      <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none">
+        <path d="M5.5 10 L1.5 7.5M5.5 13.5 L1 13.5M5.5 17 L1.5 19.5" />
+        <path d="M18.5 10 L22.5 7.5M18.5 13.5 L23 13.5M18.5 17 L22.5 19.5" />
+        <path d="M10 4 L8 1M14 4 L16 1" />
+      </g>
+    </svg>
+  );
 }
 
 const CHIPS = ['About', 'Skills', 'Experience', 'Projects'] as const;
@@ -205,7 +234,7 @@ export function BugHunterHero() {
               <div className="relative translate-y-[4%] justify-self-center lg:justify-self-start">
                 <div ref={character} className="relative w-[58%] min-w-[150px] max-w-[220px] sm:w-[44%] lg:w-[330px] lg:max-w-none">
                   <div className="pointer-events-auto" onMouseEnter={replayGreeting} onFocus={replayGreeting}>
-                    <Character state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
+                    <CharacterArt state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
                   </div>
 
                   {/* "Hi 👋" bubble — shown while the character waves */}
@@ -247,7 +276,7 @@ export function BugHunterHero() {
                 : 'absolute bottom-[30%] left-[78%] w-[16%] max-w-[110px] sm:bottom-[34%] sm:left-[84%] sm:w-[10%] lg:w-[8%]'
             }
           >
-            <Bug mood={bugMood} reducedMotion={reducedMotion} facingLeft className="h-auto w-full" />
+            <BugArt mood={bugMood} reducedMotion={reducedMotion} facingLeft className="h-auto w-full" />
           </div>
 
           {/* arrow + explosion only exist while the timeline can drive them */}
@@ -275,14 +304,25 @@ export function BugHunterHero() {
                       data-distance={particle.distance}
                       data-spin={particle.spin}
                       className={[
-                        'absolute block bg-[rgb(var(--bug))]',
+                        'absolute block',
+                        // A bug carries its own shape, so it takes the colour as
+                        // `currentColor` instead of a background fill.
+                        particle.shape === 'bug'
+                          ? 'text-[rgb(var(--bug))]'
+                          : 'bg-[rgb(var(--bug))]',
                         particle.shape === 'dot' ? 'rounded-full' : '',
                         particle.shape === 'square' ? 'rounded-[3px]' : '',
                         particle.shape === 'shard' ? '[clip-path:polygon(50%_0%,100%_100%,0%_100%)]' : '',
-                        particle.glow ? 'shadow-[0_0_14px_rgb(var(--bug)/0.7)]' : 'opacity-80',
+                        particle.glow
+                          ? particle.shape === 'bug'
+                            ? 'drop-shadow-[0_0_10px_rgb(var(--bug)/0.7)]'
+                            : 'shadow-[0_0_14px_rgb(var(--bug)/0.7)]'
+                          : 'opacity-80',
                       ].join(' ')}
                       style={{ width: particle.size, height: particle.size }}
-                    />
+                    >
+                      {particle.shape === 'bug' && <MiniBug className="h-full w-full" />}
+                    </span>
                   ))}
                 </div>
               </div>
