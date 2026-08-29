@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, Github, Linkedin, Mail, Phone } from 'lucide-react';
-import { Character } from '@/components/hero/Character';
+import { CharacterArt } from '@/components/hero/CharacterArt';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeUp, stagger, viewportOnce } from '@/lib/animations';
 import { profile } from '@/lib/content';
@@ -82,7 +82,7 @@ export function Contact() {
             viewport={viewportOnce}
             className="relative flex items-end justify-center gap-2"
           >
-            <Character
+            <CharacterArt
               state="CELEBRATE"
               reducedMotion={reducedMotion}
               className="h-auto w-[52%] max-w-[230px]"

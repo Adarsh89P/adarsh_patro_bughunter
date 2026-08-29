@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Github, Target } from 'lucide-react';
 import { BugBoss } from '@/components/hero/BugBoss';
-import { Character } from '@/components/hero/Character';
+import { CharacterArt } from '@/components/hero/CharacterArt';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { fadeUp, scaleIn, stagger, viewportOnce } from '@/lib/animations';
@@ -86,7 +86,7 @@ export function Projects() {
 
             {/* the standoff */}
             <div className="relative flex min-h-[240px] items-end justify-between gap-4 sm:min-h-[300px]">
-              <Character
+              <CharacterArt
                 state={armed && !reducedMotion ? 'AIM' : 'IDLE'}
                 reducedMotion={reducedMotion}
                 className="h-auto w-[38%] max-w-[170px]"

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { Character } from '@/components/hero/Character';
+import { CharacterArt } from '@/components/hero/CharacterArt';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Reveal } from '@/components/ui/Reveal';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -84,7 +84,7 @@ export function About() {
             <Reveal className="relative overflow-hidden rounded-3xl border border-line bg-elevated p-8">
               <div className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-accent/12 blur-3xl" />
               <div className="relative flex items-end justify-center">
-                <Character
+                <CharacterArt
                   state="IDLE"
                   reducedMotion={reducedMotion}
                   className="h-auto w-[190px] sm:w-[220px]"
