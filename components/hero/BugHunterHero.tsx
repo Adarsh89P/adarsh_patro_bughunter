@@ -140,9 +140,9 @@ export function BugHunterHero() {
   const cinematic = mounted && !reducedMotion;
   useHeroCinematic(refs, { enabled: cinematic, isDesktop, onPhase });
 
-  // The wave outranks the idle pose, but only before the story starts.
-  const characterState: CharacterState =
-    greeting && phase === 'intro' ? 'WAVE' : CHARACTER_BY_PHASE[phase];
+  // The greeting drives the speech bubble only. The hunter holds his standing
+  // pose throughout the intro, matching the storyboard's opening panel.
+  const characterState: CharacterState = CHARACTER_BY_PHASE[phase];
   const bugMood = BUG_BY_PHASE[phase];
 
   const replayGreeting = useCallback(() => {
@@ -229,10 +229,15 @@ export function BugHunterHero() {
               </motion.div>
 
               {/* ── the hunter, standing on that same line ─────────────────── */}
-              {/* the SVG leaves a little room below the feet, so nudge the
-                  figure down until its shadow lands on the ground */}
-              <div className="relative translate-y-[4%] justify-self-center lg:justify-self-start">
-                <div ref={character} className="relative w-[58%] min-w-[150px] max-w-[220px] sm:w-[44%] lg:w-[330px] lg:max-w-none">
+              {/* The pose art is trimmed to the figure, so its feet already sit
+                  on the box's bottom edge — no nudge needed to meet the ground.
+
+                  Only the base (phone) size is enlarged, to match the storyboard's
+                  mobile panel where the hunter stands tall beneath the heading.
+                  The sm and lg widths are the originals, so tablet and desktop
+                  are untouched. */}
+              <div className="relative justify-self-center lg:justify-self-start">
+                <div ref={character} className="relative w-[74%] min-w-[190px] max-w-[300px] sm:w-[44%] sm:max-w-[220px] lg:w-[330px] lg:max-w-none">
                   <div className="pointer-events-auto" onMouseEnter={replayGreeting} onFocus={replayGreeting}>
                     <CharacterArt state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
                   </div>

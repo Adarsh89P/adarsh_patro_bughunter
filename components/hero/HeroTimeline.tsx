@@ -45,9 +45,11 @@ export const CHARACTER_BY_PHASE: Record<HeroPhase, CharacterState> = {
   aim: 'AIM',
   pull: 'PULL_ARROW',
   shoot: 'SHOOT',
-  explode: 'CELEBRATE',
-  spread: 'CELEBRATE',
-  portfolio: 'CELEBRATE',
+  // After the shot the hunter simply stands, as the storyboard has him — the
+  // salute is kept for the Contact section, where "Mission Complete" earns it.
+  explode: 'IDLE',
+  spread: 'IDLE',
+  portfolio: 'IDLE',
 };
 
 export const BUG_BY_PHASE: Record<HeroPhase, BugMood> = {

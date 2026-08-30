@@ -1,14 +1,17 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { motion, type Transition, type Variants } from 'framer-motion';
 import { Character, type CharacterState } from './Character';
 import {
-  ART_CANVAS,
-  ART_READY,
+  ART_H,
+  ART_W,
+  CHARACTER_ART_READY,
+  CHARACTER_FILES,
   CHARACTER_POSE,
-  CHARACTER_POSES,
+  POSE_FPS,
   characterArtSrc,
+  poseFiles,
 } from '@/lib/characterArt';
 import { ease } from '@/lib/animations';
 
@@ -62,7 +65,24 @@ export const CharacterArt = memo(function CharacterArt({
   halo = true,
   title = 'Bug hunter character',
 }: CharacterArtProps) {
-  if (!ART_READY) {
+  const active = CHARACTER_POSE[state];
+  const frames = poseFiles(active);
+  const [frame, setFrame] = useState(0);
+
+  // A multi-frame pose loops so the limbs actually move; a single-frame pose
+  // holds still and lets the whole-body motion carry it. Hooks stay above the
+  // fallback return so the hook order never changes between renders.
+  useEffect(() => {
+    setFrame(0);
+    if (reducedMotion || frames.length < 2) return;
+    const id = window.setInterval(
+      () => setFrame((f) => (f + 1) % frames.length),
+      1000 / POSE_FPS,
+    );
+    return () => window.clearInterval(id);
+  }, [active, reducedMotion, frames.length]);
+
+  if (!CHARACTER_ART_READY) {
     return (
       <Character
         state={state}
@@ -75,14 +95,14 @@ export const CharacterArt = memo(function CharacterArt({
     );
   }
 
-  const active = CHARACTER_POSE[state];
+  const visible = frames[Math.min(frame, frames.length - 1)];
 
   return (
     <motion.div
       role="img"
       aria-label={title}
       className={className}
-      style={{ aspectRatio: '1 / 1', scaleX: facingLeft ? -1 : 1 }}
+      style={{ aspectRatio: `${ART_W} / ${ART_H}`, scaleX: facingLeft ? -1 : 1 }}
       variants={reducedMotion ? undefined : bodyVariants}
       animate={reducedMotion ? undefined : state}
       initial={false}
@@ -91,19 +111,24 @@ export const CharacterArt = memo(function CharacterArt({
         {halo && (
           <div className="pointer-events-none absolute inset-[12%] rounded-full bg-accent/10 blur-3xl dark:bg-accent/20" />
         )}
-        {CHARACTER_POSES.map((pose) => (
+        {CHARACTER_FILES.map((file) => (
           <motion.img
-            key={pose}
-            src={characterArtSrc(pose)}
+            key={file}
+            src={characterArtSrc(file)}
             alt=""
             aria-hidden
-            width={ART_CANVAS}
-            height={ART_CANVAS}
+            width={ART_W}
+            height={ART_H}
             decoding="async"
             className="absolute inset-0 h-full w-full object-contain"
             initial={false}
-            animate={{ opacity: pose === active ? 1 : 0 }}
-            transition={{ duration: reducedMotion ? 0 : 0.18, ease: ease.out }}
+            animate={{ opacity: file === visible ? 1 : 0 }}
+            // Beat changes cross-fade; frames within a looping pose cut hard,
+            // because an 83ms frame under a 180ms fade would just smear.
+            transition={{
+              duration: reducedMotion || frames.length > 1 ? 0 : 0.18,
+              ease: ease.out,
+            }}
           />
         ))}
       </div>

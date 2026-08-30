@@ -36,6 +36,18 @@ const eyeVariants: Variants = {
   HIT: { scaleY: 0.2, x: 0 },
 };
 
+/**
+ * The grin widens when the bug is taunting and gapes when it panics, so the
+ * same drawing carries the mood without swapping shapes.
+ */
+const mouthVariants: Variants = {
+  CRAWL: { scaleX: 1, scaleY: 1 },
+  TAUNT: { scaleX: 1.12, scaleY: 1.1 },
+  FLEE: { scaleX: 0.9, scaleY: 1.15 },
+  PANIC: { scaleX: 0.8, scaleY: 1.5 },
+  HIT: { scaleX: 0.7, scaleY: 0.6 },
+};
+
 function BugBase({ mood = 'CRAWL', reducedMotion = false, className, facingLeft = false }: BugProps) {
   const pose = reducedMotion ? 'TAUNT' : mood;
 
@@ -78,25 +90,37 @@ function BugBase({ mood = 'CRAWL', reducedMotion = false, className, facingLeft 
         <circle cx="42" cy="14" r="4" fill="rgb(var(--accent))" />
         <circle cx="98" cy="14" r="4" fill="rgb(var(--accent))" />
 
-        {/* body */}
-        <ellipse cx="70" cy="64" rx="27" ry="26" fill="url(#bug-body)" />
-        <ellipse cx="70" cy="64" rx="27" ry="26" fill="none" stroke="rgb(var(--bug-strong))" strokeWidth="1.5" opacity="0.5" />
-        <path d="M70 40 v46" stroke="rgb(var(--bug-strong))" strokeWidth="1.6" opacity="0.35" />
-        <circle cx="58" cy="80" r="3" fill="rgb(var(--bug-strong))" opacity="0.35" />
-        <circle cx="82" cy="78" r="2.4" fill="rgb(var(--bug-strong))" opacity="0.35" />
+        {/* body — a near-spherical carapace with a hard gloss, as in the reference */}
+        <ellipse cx="70" cy="64" rx="29" ry="27" fill="url(#bug-body)" />
+        <ellipse cx="70" cy="64" rx="29" ry="27" fill="none" stroke="rgb(var(--bug-strong))" strokeWidth="1.6" opacity="0.55" />
+        {/* shell seam and plate speckles */}
+        <path d="M70 38 v20" stroke="rgb(var(--bug-strong))" strokeWidth="1.6" opacity="0.3" />
+        <circle cx="56" cy="82" r="3.2" fill="rgb(var(--bug-strong))" opacity="0.32" />
+        <circle cx="84" cy="80" r="2.6" fill="rgb(var(--bug-strong))" opacity="0.32" />
+        <circle cx="70" cy="87" r="2.2" fill="rgb(var(--bug-strong))" opacity="0.26" />
+        {/* specular highlight — the glossy top-left sheen */}
+        <ellipse cx="57" cy="48" rx="10" ry="6.5" fill="#ffffff" opacity="0.22" transform="rotate(-28 57 48)" />
 
-        {/* eyes */}
-        <motion.g variants={eyeVariants} animate={pose} initial={false} style={{ transformBox: 'view-box', originX: '70px', originY: '56px' }}>
-          <ellipse cx="60" cy="56" rx="9" ry="10" fill="#ffffff" />
-          <ellipse cx="80" cy="56" rx="9" ry="10" fill="#ffffff" />
-          <circle cx="60" cy="57" r="4.4" fill="#16121f" />
-          <circle cx="80" cy="57" r="4.4" fill="#16121f" />
-          <circle cx="61.8" cy="54.6" r="1.6" fill="#ffffff" />
-          <circle cx="81.8" cy="54.6" r="1.6" fill="#ffffff" />
+        {/* eyes — oversized and googly, sitting proud of the shell */}
+        <motion.g variants={eyeVariants} animate={pose} initial={false} style={{ transformBox: 'view-box', originX: '70px', originY: '54px' }}>
+          <ellipse cx="58" cy="54" rx="12" ry="13" fill="#ffffff" />
+          <ellipse cx="82" cy="54" rx="12" ry="13" fill="#ffffff" />
+          <ellipse cx="58" cy="54" rx="12" ry="13" fill="none" stroke="rgb(var(--bug-strong))" strokeWidth="1.2" opacity="0.45" />
+          <ellipse cx="82" cy="54" rx="12" ry="13" fill="none" stroke="rgb(var(--bug-strong))" strokeWidth="1.2" opacity="0.45" />
+          <circle cx="58.5" cy="56" r="5.6" fill="#16121f" />
+          <circle cx="82.5" cy="56" r="5.6" fill="#16121f" />
+          <circle cx="60.8" cy="52.8" r="2.1" fill="#ffffff" />
+          <circle cx="84.8" cy="52.8" r="2.1" fill="#ffffff" />
         </motion.g>
 
-        {/* mouth */}
-        <path d="M62 72 q8 7 16 0" fill="none" stroke="#16121f" strokeWidth="2.2" strokeLinecap="round" />
+        {/* mouth — a wide toothy grin rather than a plain curve */}
+        <motion.g variants={mouthVariants} animate={pose} initial={false} style={{ transformBox: 'view-box', originX: '70px', originY: '73px' }}>
+          <path d="M58 71 q12 12 24 0 q-12 5 -24 0 z" fill="#2a0f3d" />
+          <path d="M58 71 q12 12 24 0" fill="none" stroke="#16121f" strokeWidth="2" strokeLinecap="round" />
+          {/* fangs */}
+          <path d="M62.5 72.4 l3 5 l3 -4.2 z" fill="#ffffff" />
+          <path d="M71.5 73.4 l3 4.6 l3 -5.4 z" fill="#ffffff" />
+        </motion.g>
       </motion.g>
     </svg>
   );

@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { Bug, type BugMood } from './Bug';
-import { ART_CANVAS, ART_READY, BUG_POSE, BUG_POSES, bugArtSrc } from '@/lib/characterArt';
+import { ART_H, ART_W, BUG_ART_READY, BUG_POSE, BUG_POSES, bugArtSrc } from '@/lib/characterArt';
 import { ease } from '@/lib/animations';
 
 type BugArtProps = {
@@ -31,7 +31,7 @@ export const BugArt = memo(function BugArt({
   facingLeft = false,
   title = 'Bug',
 }: BugArtProps) {
-  if (!ART_READY) {
+  if (!BUG_ART_READY) {
     return <Bug mood={mood} reducedMotion={reducedMotion} className={className} facingLeft={facingLeft} />;
   }
 
@@ -54,8 +54,8 @@ export const BugArt = memo(function BugArt({
             src={bugArtSrc(pose)}
             alt=""
             aria-hidden
-            width={ART_CANVAS}
-            height={ART_CANVAS}
+            width={ART_W}
+            height={ART_H}
             decoding="async"
             className="absolute inset-0 h-full w-full object-contain"
             initial={false}
