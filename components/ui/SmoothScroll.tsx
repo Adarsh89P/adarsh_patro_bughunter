@@ -14,6 +14,17 @@ export function SmoothScroll() {
   useEffect(() => {
     if (reducedMotion) return;
 
+    /**
+     * Touch devices keep native scrolling.
+     *
+     * Lenis replaces the browser's own momentum with a JS rAF loop and pushes a
+     * ScrollTrigger update on every frame. Desktop absorbs that; phones do not —
+     * it competes with the compositor-driven scroll they already do well, which
+     * is felt as stutter and delayed input. A coarse pointer is the signal, not
+     * viewport width, because that is what actually distinguishes touch.
+     */
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
     let frame = 0;
     let lenis: Lenis | null = null;
     let cancelled = false;

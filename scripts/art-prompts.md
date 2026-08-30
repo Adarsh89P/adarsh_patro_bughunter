@@ -2,7 +2,7 @@
 
 Paste these into whatever image tool made the storyboard (Gemini / ChatGPT / Midjourney).
 One prompt per file. Save the results into the paths given below, then flip
-`ART_READY` to `true` in `lib/characterArt.ts`.
+`CHARACTER_ART_READY` to `true` in `lib/characterArt.ts` (the bug and boss have their own `BUG_ART_READY` flag).
 
 ## Rules that matter
 

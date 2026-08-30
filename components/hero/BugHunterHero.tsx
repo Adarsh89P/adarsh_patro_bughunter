@@ -17,7 +17,7 @@ import {
   type HeroRefs,
 } from './HeroTimeline';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useIsDesktop } from '@/hooks/useMediaQuery';
+import { useHasFinePointer, useIsDesktop } from '@/hooks/useMediaQuery';
 import { ease, fadeUp, stagger } from '@/lib/animations';
 import { profile } from '@/lib/content';
 
@@ -87,6 +87,7 @@ const CHIPS = ['About', 'Skills', 'Experience', 'Projects'] as const;
 export function BugHunterHero() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useIsDesktop();
+  const finePointer = useHasFinePointer();
   const [mounted, setMounted] = useState(false);
   const [phase, setPhase] = useState<HeroPhase>('intro');
   const [greeting, setGreeting] = useState(true);
@@ -109,14 +110,14 @@ export function BugHunterHero() {
     [],
   );
 
-  const particles = useMemo(() => buildParticles(isDesktop ? 46 : 20), [isDesktop]);
   const onPhase = useCallback((next: HeroPhase) => setPhase(next), []);
 
   useEffect(() => setMounted(true), []);
 
   /**
-   * The opening beat: the character waves hello while the greeting is on screen.
-   * It ends on a timer, or the moment the visitor starts the story by scrolling.
+   * The opening beat: the speech bubble greets the visitor while the hunter
+   * holds his standing pose. It ends on a timer, or the moment the visitor
+   * starts the story by scrolling.
    */
   useEffect(() => {
     if (reducedMotion) {
@@ -137,8 +138,69 @@ export function BugHunterHero() {
     };
   }, [reducedMotion]);
 
-  const cinematic = mounted && !reducedMotion;
+  /**
+   * The pinned, scroll-scrubbed cinematic is desktop-only — which is what
+   * `useIsDesktop` always claimed, but the check was missing, so phones were
+   * running a 560vh pinned timeline with ~30 scrubbed tweens and a particle
+   * burst. That is what made mobile hang. Below `lg` the hero renders as the
+   * compact static scene instead, matching the storyboard's mobile panel.
+   *
+   * The pointer check covers tablets, which clear 1024px but scroll on a touch
+   * compositor the scrubbed timeline fights with.
+   */
+  const cinematic = mounted && !reducedMotion && isDesktop && finePointer;
   useHeroCinematic(refs, { enabled: cinematic, isDesktop, onPhase });
+
+  // Particles only exist inside the cinematic, so building them otherwise is
+  // pure waste on the devices that can least afford it.
+  const particles = useMemo(() => (cinematic ? buildParticles(46) : []), [cinematic]);
+
+
+  /**
+   * Publish the shot line as `--shot`: the height, measured up from the scene's
+   * bottom, at which the arrow leaves the bow.
+   *
+   * The hunt has to read horizontally. Before this the bug, arrow and impact sat
+   * on hardcoded viewport percentages that had nothing to do with the character,
+   * so they fanned out into a wedge that got worse as the character resized.
+   *
+   * The line cannot be written as static CSS: the character sits in a grid row
+   * that is vertically centred, so the ground's position depends on the row's
+   * own content height. Measuring is the honest way to get it.
+   *
+   * `offsetTop`/`offsetHeight` are used rather than getBoundingClientRect
+   * because the scene carries GSAP's pan and zoom during the timeline, and
+   * offsets ignore transforms — so the value stays correct mid-scroll.
+   */
+  useEffect(() => {
+    if (!mounted) return;
+    const sceneEl = scene.current;
+    const charEl = character.current;
+    if (!sceneEl || !charEl) return;
+
+    // Where the arrow sits in the pose art, as a fraction of the box height
+    // above its bottom edge. Measured off aim.png (tip centre y=110.6 of 320).
+    const ARROW_FROM_BOTTOM = 0.654;
+
+    const apply = () => {
+      let top = 0;
+      for (let n: HTMLElement | null = charEl; n && n !== sceneEl; n = n.offsetParent as HTMLElement | null) {
+        top += n.offsetTop;
+      }
+      const shotFromTop = top + charEl.offsetHeight * (1 - ARROW_FROM_BOTTOM);
+      sceneEl.style.setProperty('--shot', `${Math.round(sceneEl.offsetHeight - shotFromTop)}px`);
+    };
+
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(charEl);
+    ro.observe(sceneEl);
+    window.addEventListener('resize', apply);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', apply);
+    };
+  }, [mounted, cinematic]);
 
   // The greeting drives the speech bubble only. The hunter holds his standing
   // pose throughout the intro, matching the storyboard's opening panel.
@@ -165,7 +227,7 @@ export function BugHunterHero() {
         {/* backdrop */}
         <div ref={parallax} className="pointer-events-none absolute inset-0 -z-10">
           <div className="grid-backdrop absolute inset-0" />
-          <div className="absolute left-1/2 top-1/3 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]" />
+          <div className="absolute left-1/2 top-1/3 hidden h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px] lg:block" />
           <Clouds className="absolute inset-0" />
         </div>
 
@@ -239,7 +301,14 @@ export function BugHunterHero() {
               <div className="relative justify-self-center lg:justify-self-start">
                 <div ref={character} className="relative w-[74%] min-w-[190px] max-w-[300px] sm:w-[44%] sm:max-w-[220px] lg:w-[330px] lg:max-w-none">
                   <div className="pointer-events-auto" onMouseEnter={replayGreeting} onFocus={replayGreeting}>
-                    <CharacterArt state={characterState} reducedMotion={reducedMotion} className="h-auto w-full" />
+                    <CharacterArt
+                      state={characterState}
+                      reducedMotion={reducedMotion}
+                      // Without the cinematic the hunter never leaves his
+                      // standing pose, so phones fetch one drawing, not five.
+                      states={cinematic ? undefined : ['IDLE']}
+                      className="h-auto w-full"
+                    />
                   </div>
 
                   {/* "Hi 👋" bubble — shown while the character waves */}
@@ -272,29 +341,32 @@ export function BugHunterHero() {
             </div>
           </div>
 
-          {/* bug — parked beside the hunter when the cinematic is off */}
+          {/* bug — parked beside the hunter when the cinematic is off.
+              The wrapper owns the position so its centre sits on the shot line;
+              the inner element is what GSAP drives, since GSAP overwrites the
+              whole transform and would otherwise wipe out the centring. */}
           <div
-            ref={bug}
             className={
               cinematic
-                ? 'absolute bottom-[26%] left-[40%] w-[20%] max-w-[130px] opacity-0 sm:bottom-[30%] sm:left-[44%] sm:w-[10%] lg:left-[46%] lg:w-[8%]'
-                : 'absolute bottom-[30%] left-[78%] w-[16%] max-w-[110px] sm:bottom-[34%] sm:left-[84%] sm:w-[10%] lg:w-[8%]'
+                ? 'absolute bottom-[var(--shot,30%)] left-[40%] w-[20%] max-w-[130px] translate-y-1/2 sm:left-[44%] sm:w-[10%] lg:left-[46%] lg:w-[8%]'
+                : 'absolute bottom-[var(--shot,30%)] left-[78%] w-[16%] max-w-[110px] translate-y-1/2 sm:left-[84%] sm:w-[10%] lg:w-[8%]'
             }
           >
-            <BugArt mood={bugMood} reducedMotion={reducedMotion} facingLeft className="h-auto w-full" />
+            <div ref={bug} className={cinematic ? 'opacity-0' : undefined}>
+              <BugArt mood={bugMood} reducedMotion={reducedMotion} facingLeft className="h-auto w-full" />
+            </div>
           </div>
 
           {/* arrow + explosion only exist while the timeline can drive them */}
           {cinematic && (
             <>
-              <div
-                ref={arrow}
-                className="absolute bottom-[30%] left-[46%] w-[14%] max-w-[110px] sm:bottom-[34%] sm:left-[58%] sm:w-[8%] lg:left-[60%] lg:w-[7%]"
-              >
-                <Arrow className="h-auto w-full" />
+              <div className="absolute bottom-[var(--shot,30%)] left-[46%] w-[14%] max-w-[110px] translate-y-1/2 sm:left-[58%] sm:w-[8%] lg:left-[60%] lg:w-[7%]">
+                <div ref={arrow}>
+                  <Arrow className="h-auto w-full" />
+                </div>
               </div>
 
-              <div className="absolute bottom-[32%] left-[88%] sm:bottom-[36%] lg:left-[97%]">
+              <div className="absolute bottom-[var(--shot,32%)] left-[88%] lg:left-[97%]">
                 <div
                   ref={flash}
                   className="absolute h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full

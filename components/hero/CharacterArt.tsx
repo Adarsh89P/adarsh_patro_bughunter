@@ -22,6 +22,13 @@ type CharacterArtProps = {
   facingLeft?: boolean;
   halo?: boolean;
   title?: string;
+  /**
+   * The states this instance can ever display. Every listed pose is mounted so
+   * beats can cross-fade, so a section that only shows one pose should say so —
+   * otherwise it downloads the whole set for a picture that never changes.
+   * Defaults to every state, which is what the hero needs.
+   */
+  states?: readonly CharacterState[];
 };
 
 const snap: Transition = { duration: 0.28, ease: ease.out };
@@ -64,9 +71,13 @@ export const CharacterArt = memo(function CharacterArt({
   facingLeft = false,
   halo = true,
   title = 'Bug hunter character',
+  states,
 }: CharacterArtProps) {
   const active = CHARACTER_POSE[state];
   const frames = poseFiles(active);
+  const files = states
+    ? [...new Set(states.flatMap((s) => poseFiles(CHARACTER_POSE[s])))]
+    : CHARACTER_FILES;
   const [frame, setFrame] = useState(0);
 
   // A multi-frame pose loops so the limbs actually move; a single-frame pose
@@ -111,7 +122,15 @@ export const CharacterArt = memo(function CharacterArt({
         {halo && (
           <div className="pointer-events-none absolute inset-[12%] rounded-full bg-accent/10 blur-3xl dark:bg-accent/20" />
         )}
-        {CHARACTER_FILES.map((file) => (
+        {/*
+          The SVG rig lightened its own palette in dark mode; fixed PNG art
+          cannot, and this character is dressed in near-black. On the dark
+          canvas the hair and boots would merge into the background, so a soft
+          light pool sits behind the figure to hold its silhouette. Dark mode
+          only — in light mode the art already separates cleanly.
+        */}
+        <div className="pointer-events-none absolute inset-[6%] hidden rounded-[45%] bg-[radial-gradient(ellipse_at_50%_60%,rgb(var(--ink)/0.16),transparent_70%)] blur-2xl dark:block" />
+        {files.map((file) => (
           <motion.img
             key={file}
             src={characterArtSrc(file)}

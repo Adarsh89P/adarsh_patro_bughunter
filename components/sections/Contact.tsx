@@ -21,7 +21,7 @@ export function Contact() {
   return (
     <section id="contact" className="relative scroll-mt-24 overflow-hidden border-t border-line py-24 sm:py-32">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[420px]">
-        <div className="absolute left-1/2 top-1/2 h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px]" />
+        <div className="absolute left-1/2 top-1/2 hidden h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px] lg:block" />
       </div>
 
       <div className="container">
@@ -84,6 +84,7 @@ export function Contact() {
           >
             <CharacterArt
               state="CELEBRATE"
+              states={['CELEBRATE']}
               reducedMotion={reducedMotion}
               className="h-auto w-[52%] max-w-[230px]"
               title="Adarsh celebrating a completed mission"

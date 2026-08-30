@@ -21,3 +21,12 @@ export function useMediaQuery(query: string): boolean {
 export function useIsDesktop(): boolean {
   return useMediaQuery('(min-width: 1024px)');
 }
+
+/**
+ * True for mouse-driven devices. Width alone is not enough to decide whether a
+ * device can carry the pinned cinematic: a tablet in landscape clears 1024px
+ * but scrolls on a touch compositor that the scrubbed timeline fights with.
+ */
+export function useHasFinePointer(): boolean {
+  return useMediaQuery('(pointer: fine)');
+}

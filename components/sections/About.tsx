@@ -86,6 +86,7 @@ export function About() {
               <div className="relative flex items-end justify-center">
                 <CharacterArt
                   state="IDLE"
+                  states={['IDLE']}
                   reducedMotion={reducedMotion}
                   className="h-auto w-[190px] sm:w-[220px]"
                   title="Adarsh at rest between hunts"

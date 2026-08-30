@@ -88,6 +88,7 @@ export function Projects() {
             <div className="relative flex min-h-[240px] items-end justify-between gap-4 sm:min-h-[300px]">
               <CharacterArt
                 state={armed && !reducedMotion ? 'AIM' : 'IDLE'}
+                states={['AIM', 'IDLE']}
                 reducedMotion={reducedMotion}
                 className="h-auto w-[38%] max-w-[170px]"
                 title="Adarsh taking aim at the bug boss"

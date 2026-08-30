@@ -18,7 +18,7 @@ Usage:
     python scripts/generate_character_art.py --pro            # higher-fidelity model
 
 Output lands in public/art/{character,bug,boss}/<pose>.png. When the set looks
-right, flip ART_READY to true in lib/characterArt.ts.
+right, flip CHARACTER_ART_READY (or BUG_ART_READY) to true in lib/characterArt.ts.
 """
 
 import argparse
@@ -188,7 +188,7 @@ def main():
                 anchor = data
 
     print("")
-    print("Done. Review the set, then set ART_READY = true in lib/characterArt.ts")
+    print("Done. Review the set, then set CHARACTER_ART_READY = true in lib/characterArt.ts")
 
 
 if __name__ == "__main__":

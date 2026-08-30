@@ -50,7 +50,7 @@ export function Experience() {
               style={{ top: walkerTop }}
               className="absolute left-[-20px] hidden w-16 -translate-y-1/2 sm:block"
             >
-              <CharacterArt state="IDLE" halo={false} className="h-auto w-full" />
+              <CharacterArt state="IDLE" states={['IDLE']} halo={false} className="h-auto w-full" />
             </motion.div>
           )}
 
