@@ -317,8 +317,8 @@ export function BugHunterHero() {
                     initial={false}
                     animate={greeting && phase === 'intro' ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 6 }}
                     transition={{ duration: 0.4, ease: ease.out }}
-                    className="absolute left-[56%] top-[2%] w-max max-w-[150px] rounded-2xl rounded-bl-md border border-line
-                      bg-elevated px-3.5 py-2.5 text-[13px] font-medium leading-snug shadow-lift sm:left-[82%]
+                    className="glass-panel absolute left-[56%] top-[2%] w-max max-w-[150px] rounded-2xl rounded-bl-md
+                      px-3.5 py-2.5 text-[13px] font-medium leading-snug sm:left-[82%]
                       sm:top-[4%] sm:max-w-[180px] sm:px-4 sm:py-3 sm:text-sm"
                   >
                     <span aria-hidden className="mr-1">👋</span>

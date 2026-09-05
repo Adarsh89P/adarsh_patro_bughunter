@@ -4,6 +4,7 @@ import { Fragment } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, ArrowRight, TrendingUp, Wrench } from 'lucide-react';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { GlassBed } from '@/components/ui/GlassBed';
 import { fadeUp, stagger, viewportOnce } from '@/lib/animations';
 import { missionHighlight } from '@/lib/content';
 
@@ -46,40 +47,38 @@ export function Highlight() {
           </div>
 
           {/* challenge → solution → impact, as a left-to-right progression */}
-          <motion.div
-            variants={stagger(0.1)}
-            initial="hidden"
-            whileInView="show"
-            viewport={viewportOnce}
-            className="mt-10 grid gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-stretch lg:gap-0"
-          >
-            {BEATS.map((beat, index) => (
-              <Fragment key={beat.key}>
-                <motion.div
-                  variants={fadeUp}
-                  className="h-full rounded-2xl border border-line bg-surface p-6
-                    transition-[border-color,box-shadow] duration-300 hover:border-accent/35 hover:shadow-lift"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 ${beat.tone}`}>
-                      <beat.icon className="h-4 w-4" aria-hidden />
-                    </span>
-                    <h4 className="font-mono text-[11px] uppercase tracking-[0.18em] text-faint">
-                      {beat.label}
-                    </h4>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-muted">{missionHighlight[beat.key]}</p>
-                </motion.div>
+          <GlassBed className="mt-10 rounded-3xl">
+            <motion.div
+              variants={stagger(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              className="grid gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-stretch lg:gap-0"
+            >
+              {BEATS.map((beat, index) => (
+                <Fragment key={beat.key}>
+                  <motion.div variants={fadeUp} whileTap={{ scale: 0.98 }} className="glass-panel h-full rounded-2xl p-6">
+                    <div className="flex items-center gap-3">
+                      <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 ${beat.tone}`}>
+                        <beat.icon className="h-4 w-4" aria-hidden />
+                      </span>
+                      <h4 className="font-mono text-[11px] uppercase tracking-[0.18em] text-faint">
+                        {beat.label}
+                      </h4>
+                    </div>
+                    <p className="mt-4 text-sm leading-relaxed text-muted">{missionHighlight[beat.key]}</p>
+                  </motion.div>
 
-                {/* connector — only between cards, and only once they sit in a row */}
-                {index < BEATS.length - 1 && (
-                  <div aria-hidden className="hidden items-center px-3 lg:flex">
-                    <ArrowRight className="h-4 w-4 text-faint" />
-                  </div>
-                )}
-              </Fragment>
-            ))}
-          </motion.div>
+                  {/* connector — only between cards, and only once they sit in a row */}
+                  {index < BEATS.length - 1 && (
+                    <div aria-hidden className="hidden items-center px-3 lg:flex">
+                      <ArrowRight className="h-4 w-4 text-faint" />
+                    </div>
+                  )}
+                </Fragment>
+              ))}
+            </motion.div>
+          </GlassBed>
 
           {/* the numbers the fight produced */}
           <motion.dl
@@ -93,7 +92,8 @@ export function Highlight() {
               <motion.div
                 key={metric.label}
                 variants={fadeUp}
-                className="rounded-2xl border border-line bg-elevated px-6 py-5"
+                whileTap={{ scale: 0.97 }}
+                className="glass-panel-accent glass-panel rounded-2xl px-6 py-5"
               >
                 <dt className="sr-only">{metric.label}</dt>
                 <dd>

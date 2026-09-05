@@ -81,7 +81,7 @@ export function About() {
           </div>
 
           <div className="space-y-6">
-            <Reveal className="relative overflow-hidden rounded-3xl border border-line bg-elevated p-8">
+            <Reveal className="glass-panel relative rounded-3xl p-8">
               <div className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-accent/12 blur-3xl" />
               <div className="relative flex items-end justify-center">
                 <CharacterArt
@@ -108,8 +108,7 @@ export function About() {
                 <motion.li
                   key={focus.label}
                   variants={fadeUp}
-                  className="group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4
-                    transition-colors duration-300 hover:border-accent/35"
+                  className="glass-panel group flex items-start gap-4 rounded-2xl p-4"
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent
                     transition-transform duration-300 group-hover:scale-105">

@@ -28,12 +28,7 @@ export function Skills() {
         >
           {skillGroups.map((group) => (
             <motion.li key={group.name} variants={fadeUp}>
-              <article
-                className="group relative h-full overflow-hidden rounded-2xl border border-line bg-surface p-5
-                  transition-[transform,border-color,box-shadow] duration-300 will-change-transform
-                  hover:-translate-y-1 hover:border-accent/35 hover:shadow-lift focus-within:-translate-y-1"
-                tabIndex={0}
-              >
+              <article className="glass-panel group relative h-full rounded-2xl p-5" tabIndex={0}>
                 <span
                   aria-hidden
                   className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-accent/0

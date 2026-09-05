@@ -40,6 +40,9 @@
     --flora: 127 176 105;
     --pebble: 148 145 168;
 
+    /* Second hue for the ambient mesh + glass beds — keeps the wash from reading as one flat tint. */
+    --mesh-cool: 56 189 248;
+
     --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
   }
@@ -77,6 +80,8 @@
 
     --flora: 86 122 72;
     --pebble: 92 90 116;
+
+    --mesh-cool: 45 156 219;
   }
 
   * {
@@ -92,6 +97,9 @@
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    /* Anchors the ambient mesh's negative z-index so it never escapes behind
+       the page entirely — see .ambient-mesh below. */
+    isolation: isolate;
   }
 
   ::selection {
@@ -118,13 +126,18 @@
 }
 
 @layer components {
-  .surface-card {
-    @apply rounded-2xl border border-line bg-surface shadow-soft;
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1
+      font-mono text-[11px] uppercase tracking-[0.18em] text-muted;
+    background: rgb(var(--surface) / 0.55);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), inset 0 0 0 1px rgb(var(--line) / 0.7);
   }
 
-  .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3 py-1
-      font-mono text-[11px] uppercase tracking-[0.18em] text-muted backdrop-blur;
+  .dark .eyebrow {
+    background: rgb(var(--surface) / 0.6);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(var(--line) / 0.8);
   }
 
   .section-heading {
@@ -151,9 +164,282 @@
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line bg-surface
-      px-6 py-3 text-sm font-medium text-ink transition-colors duration-200 hover:border-accent/45
-      hover:text-accent;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm
+      font-medium text-ink transition-colors duration-200 hover:text-accent;
+  }
+
+  /*
+   * Liquid glass — a frosted panel that actually refracts what's behind it.
+   * `.surface-card` (the site's default card) and `.glass-panel` (the
+   * interactive, cursor-lit version used with <GlassCard>) share this body:
+   * real transparency so backdrop-filter has something to bend, a baked-in
+   * sheen so it reads as glass before any hover fires, and a bright top edge
+   * / dim bottom edge to fake the way real glass catches light from above.
+   * Sections using either should sit on the page's `.ambient-mesh` or a local
+   * `.glass-bed` — without color behind them the blur has nothing to distort
+   * and the card just looks like a plain translucent box.
+   */
+  .surface-card,
+  .glass-panel,
+  .btn-ghost {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(130% 100% at 15% -25%, rgb(255 255 255 / 0.6), transparent 50%),
+      linear-gradient(165deg, rgb(var(--surface) / 0.5), rgb(var(--surface) / 0.16));
+    backdrop-filter: blur(28px) saturate(190%) brightness(1.05);
+    -webkit-backdrop-filter: blur(28px) saturate(190%) brightness(1.05);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.65),
+      inset 0 -1px 0 rgb(15 12 32 / 0.04),
+      inset 0 0 0 1px rgb(255 255 255 / 0.4),
+      0 1px 2px rgb(15 12 32 / 0.04),
+      0 16px 40px -20px rgb(15 12 32 / 0.32);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+
+  .surface-card {
+    border-radius: 1.125rem; /* matches the old rounded-2xl default */
+  }
+
+  .dark .surface-card,
+  .dark .glass-panel,
+  .dark .btn-ghost {
+    background:
+      radial-gradient(130% 100% at 15% -25%, rgb(255 255 255 / 0.1), transparent 50%),
+      linear-gradient(165deg, rgb(var(--surface) / 0.66), rgb(var(--surface) / 0.3));
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.14),
+      inset 0 -1px 0 rgb(0 0 0 / 0.3),
+      inset 0 0 0 1px rgb(255 255 255 / 0.08),
+      0 1px 2px rgb(0 0 0 / 0.25),
+      0 16px 40px -20px rgb(0 0 0 / 0.65);
+  }
+
+  /* The cursor-tracked highlight — --x/--y are set by GlassCard on pointer move. */
+  .surface-card::before,
+  .glass-panel::before,
+  .btn-ghost::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(260px circle at var(--x, 50%) var(--y, 15%), rgb(var(--accent) / 0.3), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .surface-card:hover::before,
+  .surface-card:active::before,
+  .surface-card:focus-within::before,
+  .glass-panel:hover::before,
+  .glass-panel:active::before,
+  .glass-panel:focus-within::before,
+  .btn-ghost:hover::before,
+  .btn-ghost:focus-visible::before {
+    opacity: 1;
+  }
+
+  @media (hover: hover) {
+    .surface-card:hover,
+    .glass-panel:hover {
+      box-shadow:
+        inset 0 1.5px 0 rgb(255 255 255 / 0.7),
+        inset 0 -1px 0 rgb(15 12 32 / 0.04),
+        inset 0 0 0 1px rgb(var(--accent) / 0.5),
+        0 20px 44px -18px rgb(var(--accent) / 0.5);
+      transform: translateY(-3px);
+    }
+
+    .btn-ghost:hover {
+      box-shadow:
+        inset 0 1.5px 0 rgb(255 255 255 / 0.7),
+        inset 0 -1px 0 rgb(15 12 32 / 0.04),
+        inset 0 0 0 1px rgb(var(--accent) / 0.5),
+        0 10px 24px -14px rgb(var(--accent) / 0.5);
+      transform: translateY(-1.5px);
+    }
+
+    .dark .surface-card:hover,
+    .dark .glass-panel:hover {
+      box-shadow:
+        inset 0 1.5px 0 rgb(255 255 255 / 0.18),
+        inset 0 -1px 0 rgb(0 0 0 / 0.3),
+        inset 0 0 0 1px rgb(var(--accent) / 0.55),
+        0 20px 44px -18px rgb(var(--accent) / 0.6);
+    }
+
+    .dark .btn-ghost:hover {
+      box-shadow:
+        inset 0 1.5px 0 rgb(255 255 255 / 0.18),
+        inset 0 -1px 0 rgb(0 0 0 / 0.3),
+        inset 0 0 0 1px rgb(var(--accent) / 0.55),
+        0 10px 24px -14px rgb(var(--accent) / 0.6);
+    }
+  }
+
+  .surface-card:active,
+  .glass-panel:active,
+  .btn-ghost:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .glass-panel-accent {
+    background:
+      radial-gradient(130% 100% at 15% -25%, rgb(255 255 255 / 0.45), transparent 50%),
+      linear-gradient(165deg, rgb(var(--accent) / 0.24), rgb(var(--surface) / 0.22));
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.5),
+      inset 0 0 0 1px rgb(var(--accent) / 0.32),
+      0 16px 40px -20px rgb(var(--accent) / 0.35);
+  }
+
+  .dark .glass-panel-accent {
+    background:
+      radial-gradient(130% 100% at 15% -25%, rgb(255 255 255 / 0.08), transparent 50%),
+      linear-gradient(165deg, rgb(var(--accent) / 0.3), rgb(var(--surface) / 0.34));
+  }
+
+  /* The top nav bar and its mobile sheet — a persistent glass strip, no hover lift. */
+  .nav-glass {
+    background:
+      linear-gradient(180deg, rgb(var(--surface) / 0.68), rgb(var(--surface) / 0.42));
+    backdrop-filter: blur(24px) saturate(190%) brightness(1.05);
+    -webkit-backdrop-filter: blur(24px) saturate(190%) brightness(1.05);
+    box-shadow:
+      inset 0 -1px 0 rgb(var(--line) / 0.7),
+      inset 0 1px 0 rgb(255 255 255 / 0.5),
+      0 12px 32px -24px rgb(15 12 32 / 0.4);
+  }
+
+  .dark .nav-glass {
+    background:
+      linear-gradient(180deg, rgb(var(--surface) / 0.75), rgb(var(--surface) / 0.5));
+    box-shadow:
+      inset 0 -1px 0 rgb(var(--line) / 0.8),
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 12px 32px -24px rgb(0 0 0 / 0.7);
+  }
+
+  /*
+   * A colorful, blurred backdrop for a local group of glass panels — layers
+   * on top of the page-wide .ambient-mesh for extra intensity where cards
+   * cluster densely. Drop two ambient blobs inside it:
+   *   <div class="glass-bed"><span class="glass-bed-a" /><span class="glass-bed-b" />...</div>
+   * `overflow: hidden` is baked in so the off-edge blobs never cause a
+   * horizontal scrollbar on narrow screens.
+   */
+  .glass-bed {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 0.625rem;
+  }
+
+  .glass-bed-a,
+  .glass-bed-b {
+    position: absolute;
+    z-index: -1;
+    border-radius: 9999px;
+    filter: blur(64px);
+    pointer-events: none;
+  }
+
+  .glass-bed-a {
+    top: -3.5rem;
+    right: -3rem;
+    height: 13rem;
+    width: 13rem;
+    background: rgb(var(--accent) / 0.28);
+  }
+
+  .dark .glass-bed-a {
+    background: rgb(var(--accent) / 0.32);
+  }
+
+  .glass-bed-b {
+    bottom: -3.5rem;
+    left: -3rem;
+    height: 11rem;
+    width: 11rem;
+    background: rgb(var(--mesh-cool) / 0.2);
+  }
+
+  .dark .glass-bed-b {
+    background: rgb(var(--mesh-cool) / 0.22);
+  }
+
+  /*
+   * The page-wide ambient mesh — three soft, slowly drifting color fields
+   * fixed behind every section. This is the piece that makes the glass
+   * system read as glass: without color living behind the page at all
+   * times, backdrop-blur has nothing to refract and every card above just
+   * looks like a plain translucent box. `body` carries `isolation: isolate`
+   * so this element's negative z-index stays pinned behind in-flow content
+   * instead of escaping to the real page background.
+   */
+  .ambient-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .ambient-mesh span {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(110px);
+    animation: mesh-drift 34s ease-in-out infinite alternate;
+  }
+
+  .ambient-mesh .mesh-a {
+    top: -12%;
+    left: -10%;
+    height: 46vw;
+    width: 46vw;
+    background: rgb(var(--accent) / 0.24);
+    animation-delay: -6s;
+  }
+
+  .ambient-mesh .mesh-b {
+    top: 8%;
+    right: -14%;
+    height: 40vw;
+    width: 40vw;
+    background: rgb(var(--mesh-cool) / 0.16);
+    animation-delay: -18s;
+  }
+
+  .ambient-mesh .mesh-c {
+    bottom: -16%;
+    left: 22%;
+    height: 50vw;
+    width: 50vw;
+    background: rgb(var(--accent-soft) / 0.16);
+    animation-delay: -26s;
+  }
+
+  .dark .ambient-mesh .mesh-a {
+    background: rgb(var(--accent) / 0.3);
+  }
+
+  .dark .ambient-mesh .mesh-b {
+    background: rgb(var(--mesh-cool) / 0.2);
+  }
+
+  .dark .ambient-mesh .mesh-c {
+    background: rgb(var(--accent-soft) / 0.18);
+  }
+
+  @keyframes mesh-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(3%, 4%, 0) scale(1.08);
+    }
   }
 }
 

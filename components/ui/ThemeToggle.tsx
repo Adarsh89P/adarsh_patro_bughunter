@@ -17,8 +17,8 @@ export function ThemeToggle() {
       type="button"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-muted
-        transition-colors hover:border-accent/45 hover:text-accent"
+      className="glass-panel inline-flex h-9 w-9 items-center justify-center rounded-full text-muted
+        transition-colors hover:text-accent"
     >
       {/* Both icons render so the button never shifts during hydration. */}
       <Sun className={`h-4 w-4 ${isDark ? 'hidden' : 'block'}`} aria-hidden />

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Github, Target } from 'lucide-react';
+import { ArrowUpRight, Clock, Github, Target } from 'lucide-react';
 import { BugBoss } from '@/components/hero/BugBoss';
 import { CharacterArt } from '@/components/hero/CharacterArt';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -37,7 +37,7 @@ export function Projects() {
           viewport={viewportOnce}
           onMouseEnter={() => setArmed(true)}
           onMouseLeave={() => setArmed(false)}
-          className="relative mt-14 overflow-hidden rounded-3xl border border-line bg-elevated"
+          className="glass-panel relative mt-14 rounded-3xl"
         >
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/12 blur-3xl" />
 
@@ -54,7 +54,7 @@ export function Projects() {
 
               <ul className="mt-7 grid gap-3 sm:grid-cols-3">
                 {featured.highlights.map((highlight) => (
-                  <li key={highlight.label} className="rounded-2xl border border-line bg-surface px-4 py-3">
+                  <li key={highlight.label} className="glass-panel rounded-2xl px-4 py-3">
                     <p className="text-lg font-semibold tracking-tight">{highlight.value}</p>
                     <p className="mt-0.5 text-xs text-muted">{highlight.label}</p>
                   </li>
@@ -106,61 +106,80 @@ export function Projects() {
           viewport={viewportOnce}
           className="mt-6 grid gap-6 md:grid-cols-2"
         >
-          {rest.map((project) => (
-            <motion.li key={project.slug} variants={fadeUp}>
-              <article
-                className="group relative flex h-full flex-col rounded-3xl border border-line bg-surface p-7
-                  transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1
-                  hover:border-accent/35 hover:shadow-lift"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0">
-                      {project.name}
-                    </Link>
-                  </h3>
-                  <ArrowUpRight
-                    className="h-5 w-5 shrink-0 text-faint transition-[transform,color] duration-300
-                      group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
-                    aria-hidden
-                  />
-                </div>
+          {rest.map((project) => {
+            const isPlanned = project.status === 'planned';
 
-                <p className="mt-3 text-sm leading-relaxed text-muted">{project.tagline}</p>
-
-                <ul className="mt-6 grid grid-cols-3 gap-3">
-                  {project.highlights.map((highlight) => (
-                    <li key={highlight.label}>
-                      <p className="text-sm font-semibold tracking-tight">{highlight.value}</p>
-                      <p className="mt-0.5 text-[11px] leading-tight text-faint">{highlight.label}</p>
-                    </li>
-                  ))}
-                </ul>
-
-                <ul className="mt-auto flex flex-wrap gap-2 pt-6">
-                  {project.stack.map((tech) => (
-                    <li
-                      key={tech}
-                      className="rounded-full border border-line bg-elevated px-2.5 py-1 font-mono text-[11px] text-muted"
-                    >
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href={project.repo}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="relative z-10 mt-5 inline-flex w-max items-center gap-1.5 text-sm text-muted
-                    transition-colors hover:text-accent"
+            return (
+              <motion.li key={project.slug} variants={fadeUp}>
+                <article
+                  className={`glass-panel group relative flex h-full flex-col rounded-3xl p-7 ${
+                    isPlanned ? 'opacity-90' : ''
+                  }`}
                 >
-                  <Github className="h-4 w-4" aria-hidden />
-                  GitHub
-                </a>
-              </article>
-            </motion.li>
-          ))}
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-xl font-semibold tracking-tight">
+                      {isPlanned ? (
+                        project.name
+                      ) : (
+                        <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0">
+                          {project.name}
+                        </Link>
+                      )}
+                    </h3>
+                    {isPlanned ? (
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+                        <Clock className="h-3 w-3" aria-hidden />
+                        Coming soon
+                      </span>
+                    ) : (
+                      <ArrowUpRight
+                        className="h-5 w-5 shrink-0 text-faint transition-[transform,color] duration-300
+                          group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                        aria-hidden
+                      />
+                    )}
+                  </div>
+
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{project.tagline}</p>
+
+                  {project.highlights.length > 0 && (
+                    <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      {project.highlights.map((highlight) => (
+                        <li key={highlight.label}>
+                          <p className="text-sm font-semibold tracking-tight">{highlight.value}</p>
+                          <p className="mt-0.5 text-[11px] leading-tight text-faint">{highlight.label}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <ul className="mt-auto flex flex-wrap gap-2 pt-6">
+                    {project.stack.map((tech) => (
+                      <li
+                        key={tech}
+                        className="rounded-full border border-line bg-elevated px-2.5 py-1 font-mono text-[11px] text-muted"
+                      >
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {!isPlanned && (
+                    <a
+                      href={project.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="relative z-10 mt-5 inline-flex w-max items-center gap-1.5 text-sm text-muted
+                        transition-colors hover:text-accent"
+                    >
+                      <Github className="h-4 w-4" aria-hidden />
+                      GitHub
+                    </a>
+                  )}
+                </article>
+              </motion.li>
+            );
+          })}
         </motion.ul>
       </div>
     </section>

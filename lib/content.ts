@@ -236,12 +236,15 @@ export type Project = {
   features: string[];
   stack: string[];
   highlights: Highlight[];
+  /** Omitted (or 'shipped') for a real, linkable write-up. 'planned' renders as a coming-soon
+   *  card with no case-study page and no static route generated for it. */
+  status?: 'shipped' | 'planned';
   detail: {
     overview: string;
     goals: string[];
     architecture: string[];
     flow: string[];
-    practices: string[];
+    outcome: string;
   };
 };
 
@@ -252,48 +255,43 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    slug: 'playwright-automation-framework',
-    name: 'Playwright Automation Framework',
-    repo: 'https://github.com/Adarsh89P/playrightframework',
-    tagline: 'End-to-end web automation built with Playwright and the Page Object Model.',
+    slug: 'healthcare-playwright-framework',
+    name: 'Healthcare Test Automation Framework',
+    repo: 'https://github.com/Adarsh89P/my_healthCare_playwrightProject',
+    tagline: 'A reusable Playwright and TypeScript framework, proven against a live booking flow.',
     summary:
-      'End-to-end web automation framework built with Playwright (JavaScript/TypeScript) using the Page Object Model design pattern. Features cross-browser test execution, reusable component abstractions, data-driven test support, and integrated HTML reporting, designed for CI/CD pipeline integration.',
+      'End-to-end test automation framework built with Playwright and TypeScript, split into a reusable core layer and a project-specific layer, and validated against the CURA Healthcare demo app\'s appointment booking flow.',
     features: [
-      'Cross-browser test execution',
-      'Reusable component abstractions',
-      'Data-driven test support',
-      'Integrated HTML reporting',
-      'Designed for CI/CD pipeline integration',
+      'One-time authentication shared across every test',
+      'Validated, typed configuration per environment',
+      'Page objects that report themselves as named test steps',
+      'Tag-based suite selection for smoke and regression runs',
+      'Sharded CI pipeline with a merged Allure report',
     ],
-    stack: ['Playwright', 'JavaScript', 'TypeScript', 'Page Object Model', 'CI/CD'],
+    stack: ['Playwright', 'TypeScript', 'Winston', 'Allure', 'GitHub Actions'],
     highlights: [
-      { value: 'JS/TS', label: 'Language' },
-      { value: 'POM', label: 'Architecture' },
-      { value: 'Cross-browser', label: 'Execution' },
+      { value: 'TS', label: 'Language' },
+      { value: 'Core / Project', label: 'Layered design' },
+      { value: '4×3', label: 'CI shards × browsers' },
     ],
     detail: {
       overview:
-        'A Playwright-based end-to-end framework for web applications, structured so that tests read as business intent and the selectors live in one place per screen.',
+        'A Playwright and TypeScript framework split into a reusable core layer and a project-specific layer, so pointing it at a new application means editing one .env file rather than rebuilding the framework — proven against the CURA Healthcare demo app\'s appointment booking flow.',
       goals: [
-        'Keep tests readable by engineers who are not automation specialists.',
-        'Isolate every selector behind a page object, so a UI change touches one file.',
-        'Run the same suite across browsers without per-browser test code.',
-        'Produce a report that explains a failure without a re-run.',
+        'Keep the framework layer untouched when the application under test changes.',
+        'Fail a missing configuration value once, with a clear message, instead of surfacing undefined three layers deep.',
+        'Sign in once per run instead of repeating a UI login inside every test.',
+        'Make a report read as a sequence of named steps, not a wall of raw actions.',
       ],
       architecture: [
-        'Page objects — one per screen, exposing intent-level methods rather than raw selectors.',
-        'Reusable component abstractions for elements shared across pages.',
-        'Data-driven layer so one test body covers many input permutations.',
-        'Cross-browser configuration handled by the runner, not duplicated in tests.',
-        'HTML reporting wired in, ready to publish from a pipeline.',
+        'Core layer — base page, validated config, logger and date helpers, copied as-is into new projects.',
+        'Project layer — page objects, test data and specs, the part that changes per application.',
+        'A setup project signs in through the UI once and saves browser state for every other test to reuse.',
+        'Base page wrappers emit a named step for every action, and visibility checks wait before answering.',
       ],
-      flow: ['Trigger', 'Setup', 'Execute', 'Assert', 'Report'],
-      practices: [
-        'Wait on application state, never on fixed sleeps.',
-        'One assertion intent per test, so a failure names its own cause.',
-        'Test data prepared per run so suites can execute in parallel.',
-        'Structured for CI/CD, so the suite runs on every build rather than on demand.',
-      ],
+      flow: ['Setup', 'Authenticate', 'Execute', 'Assert', 'Report'],
+      outcome:
+        'A framework that runs against a live booking flow out of the box, and drops into a new application by editing one configuration file — no rebuild of the core.',
     },
   },
   {
@@ -333,12 +331,48 @@ export const projects: Project[] = [
         'Reporting layer capturing per-test outcomes.',
       ],
       flow: ['Suite', 'Driver', 'Page objects', 'Assertions', 'Report'],
-      practices: [
-        'Explicit waits on element state instead of implicit global waits.',
-        'Isolated test data so parallel threads never collide.',
-        'Groups separating smoke from full regression.',
-        'Peer-reviewed page objects to keep the framework consistent.',
+      outcome:
+        'A regression suite where adding a case is a data change, not new plumbing, and parallel execution keeps wall-clock time down as the suite grows.',
+    },
+  },
+  {
+    slug: 'mobile-automation-framework',
+    name: 'Mobile Automation Framework',
+    repo: 'https://github.com/Adarsh89P/Mobile_automation_framework',
+    tagline: 'Appium 2 automation for Android and iOS, built so a failure names what broke.',
+    summary:
+      '24 tests across three suites driving two real applications on Android through Appium 2, Java and TestNG, with iOS wired but not executed. 8 page objects, 95% accessibility-id locators, zero fixed sleeps.',
+    features: [
+      'One driver per thread, one session per test',
+      'Retries applied automatically and flagged flaky in the report',
+      'Flakiness ranked by status flips rather than raw failure rate',
+      'Optional AI layer for locator triage, gated behind a flag',
+      'Test data extracted from the app\'s own bundle rather than guessed',
+    ],
+    stack: ['Appium 2', 'Java', 'TestNG', 'Allure', 'Jenkins'],
+    highlights: [
+      { value: '24', label: 'Tests' },
+      { value: '8', label: 'Page objects' },
+      { value: '95%', label: 'Accessibility-id locators' },
+    ],
+    detail: {
+      overview:
+        'An Appium 2 framework for Android and iOS, built around one driver per thread and a page layer that is the only place locators live, with an opt-in AI layer that can suggest a fix but never silently change a result.',
+      goals: [
+        'Let tests run individually, in any order, and in parallel, by giving each one its own driver session.',
+        'Surface a retry as a visible, flagged event in the report, never as a silent pass.',
+        'Rank flaky tests by status flips, so a consistently broken test is never mistaken for an unstable one.',
+        'Keep the AI-assisted layer advisory only, so it can suggest a healed locator but never rewrite a result.',
       ],
+      architecture: [
+        'Core — driver lifecycle held per-thread, with no static driver anywhere in the codebase.',
+        'Pages — a base page centralises every interaction; page objects hold the platform-specific locators.',
+        'Support — wait, gesture, JSON and data utilities, so no test reaches for a fixed sleep.',
+        'Observability — a listener captures evidence on failure; retries are capped and always flagged.',
+      ],
+      flow: ['Session', 'Locate', 'Interact', 'Assert', 'Report'],
+      outcome:
+        'A suite where a failure comes with a screenshot, page source and device log already attached, and a retry never hides a real regression behind a green build.',
     },
   },
   {
@@ -377,12 +411,27 @@ export const projects: Project[] = [
         'Postman collections alongside the automated suite for exploratory checks.',
       ],
       flow: ['Request', 'Auth', 'Response', 'Schema', 'Report'],
-      practices: [
-        'Every endpoint carries at least one contract test and one negative test.',
-        'Authentication treated as a first-class scenario, not setup noise.',
-        'Kept fast so nobody is tempted to skip the gate.',
-        'Structured to run inside a CI/CD pipeline.',
-      ],
+      outcome:
+        'Contract breaks surface within minutes of a bad deploy, named down to the service and field, instead of showing up deep inside a UI run.',
+    },
+  },
+  {
+    slug: 'performance-testing-framework',
+    name: 'Performance Testing Framework',
+    repo: '',
+    tagline: 'Load and stress testing with Apache JMeter and Gatling — in progress.',
+    summary:
+      'A performance testing framework built around Apache JMeter and Gatling, validating scalability and SLA compliance under load. The repository is still private while the suite is being built out.',
+    features: [],
+    stack: ['Apache JMeter', 'Gatling'],
+    highlights: [],
+    status: 'planned',
+    detail: {
+      overview: '',
+      goals: [],
+      architecture: [],
+      flow: [],
+      outcome: '',
     },
   },
 ];

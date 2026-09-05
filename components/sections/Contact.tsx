@@ -63,8 +63,8 @@ export function Contact() {
                   <a
                     href={link.href}
                     {...(link.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-                    className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5
-                      text-sm text-muted transition-colors hover:border-accent/40 hover:text-accent"
+                    className="glass-panel inline-flex items-center gap-2 rounded-full px-4 py-2.5
+                      text-sm text-muted transition-colors hover:text-accent"
                   >
                     <link.icon className="h-4 w-4" aria-hidden />
                     {link.label}

@@ -33,8 +33,8 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-        scrolled ? 'border-b border-line bg-canvas/72 backdrop-blur-xl' : 'border-b border-transparent bg-transparent'
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
+        scrolled ? 'nav-glass' : 'border-b border-transparent bg-transparent'
       }`}
     >
       <nav className="container flex h-16 items-center justify-between gap-4" aria-label="Main">
@@ -88,7 +88,7 @@ export function Navbar() {
             onClick={() => setOpen((value) => !value)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface
+            className="glass-panel inline-flex h-9 w-9 items-center justify-center rounded-full
               text-muted transition-colors hover:text-accent md:hidden"
           >
             {open ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
@@ -103,7 +103,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.24, ease: ease.out }}
-            className="border-t border-line bg-canvas/95 backdrop-blur-xl md:hidden"
+            className="nav-glass border-t-0 md:hidden"
           >
             <ul className="container flex flex-col py-3">
               {navSections.map((section) => (
